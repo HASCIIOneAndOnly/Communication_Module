@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Бот подключен !</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='SuccessfulConnection.css') }}">
+</head>
+<body>
+<h1>Бот с токеном "{{token}}" успешно подключен!</h1>
+<form method="post">
+    <div class="center-block">
+        <div class="button-container">
+            <a href="{{ url_for('index') }}" class="main-page-button">Вернуться на главную страницу</a>
+            <a href="{{ url_for('index') }}" class="another-bot-connection-button">Подключить ещё одного бота</a>
+        </div>
+    </div>
+</form>
+</body>
+</html>
