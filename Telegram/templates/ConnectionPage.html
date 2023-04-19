@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Введите токен вашего Telegram бота</title>
-  </head>
-  <body>
-    <h1>Введите токен вашего Telegram бота</h1>
-    <form method="post">
-      <input type="text" name="token" placeholder="Введите токен">
-      <button type="submit">Продолжить</button>
-    </form>
-    <br>
-    <a href="{{ url_for('guide') }}">Гайд по подключению Telegram</a>
-  </body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ConnectionStyle.css') }}">
+</head>
+<body>
+<h1>Введите токен вашего Telegram бота</h1>
+<form method="post">
+    <div class="center-block">
+        <input type="text" name="token" placeholder="Введите токен" class="error">
+        <span id="error-message"></span>
+        <div class="button-container">
+            <button type="submit">Продолжить</button>
+            <a href="{{ url_for('guide') }}" class="guide-button">Гайд по подключению Telegram</a>
+        </div>
+    </div>
+</form>
+<!--<script>-->
+<!--  function displayError(message) {-->
+<!--    var tokenInput = document.getElementsByName("token")[0];-->
+<!--    var errorMessage = document.getElementById("error-message");-->
+<!--    tokenInput.classList.add("error");-->
+<!--    errorMessage.innerHTML = message;-->
+<!--    errorMessage.style.display = "block";-->
+<!--  }-->
+<!--</script>-->
+</body>
 </html>

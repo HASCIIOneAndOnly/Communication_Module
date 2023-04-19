@@ -9,7 +9,8 @@ from Telegram.dbhelper import DBHelper
 
 db = DBHelper()
 
-TOKEN = "6039921783:AAF1cemhYX_oUXSfSPAPh9NRv8H7oK73-FM"
+# TOKEN = "6039921783:AAF1cemhYX_oUXSfSPAPh9NRv8H7oK73-FM"
+TOKEN = "empty"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 welcoming_message = "Добрый день ! \n" \
@@ -18,7 +19,8 @@ welcoming_message = "Добрый день ! \n" \
                     "Пожалуйста выберите\n"
 
 
-def tg_setup():
+def tg_setup(token):
+
     db.setup()
     last_update_id = None
     while True:
