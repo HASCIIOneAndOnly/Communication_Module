@@ -20,6 +20,7 @@
       <list>
         <option value="$MODULE_DIR$/Telegram/templates" />
         <option value="$MODULE_DIR$/AuthRegRec/templates" />
+        <option value="$MODULE_DIR$/HomePage/templates" />
       </list>
     </option>
   </component>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="Unicode">
+<head>
+    <title>Чаты</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Chat.css') }}">
+</head>
+<body>
+<div id="chat-list">
+    <h2>Список чатов</h2>
+    <ul>
+    </ul>
+    <button id="add-chat-btn">Добавить чат</button>
+</div>
+<div id="chat-window">
+    <h2>Выбранный чат</h2>
+</div>
+<script>
+    chatList = document.querySelector('#chat-list ul');
+    chatWindow = document.querySelector('#chat-window');
+    addChatBtn = document.querySelector('#add-chat-btn');
+    let chatId = 1;
+
+    addChatBtn.addEventListener('click', e => {
+        e.preventDefault();
+        chatId++;
+        const newChatLink = document.createElement('a');
+        newChatLink.href = '#';
+        newChatLink.setAttribute('data-chat-id', chatId);
+        newChatLink.textContent = `Чат ${chatId}`;
+        const newChatLi = document.createElement('li');
+        newChatLi.appendChild(newChatLink);
+        chatList.appendChild(newChatLi);
+
+        const newChatDiv = document.createElement('div');
+        newChatDiv.classList.add('chat');
+        newChatDiv.setAttribute('data-chat-id', chatId);
+        newChatDiv.textContent = `Содержимое чата ${chatId}`;
+        chatWindow.appendChild(newChatDiv);
+
+        newChatLink.addEventListener('click', e => {
+            e.preventDefault();
+            const chatId = newChatLink.getAttribute('data-chat-id');
+            chats.forEach(chat => {
+                if (chat.getAttribute('data-chat-id') === chatId) {
+                    chat.classList.add('active-chat');
+                } else {
+                    chat.classList.remove('active-chat');
+                }
+            });
+        });
+
+        chats = document.querySelectorAll('.chat');
+    });
+
+    chatLinks.forEach(chatLink => {
+        chatLink.addEventListener('click', e => {
+            e.preventDefault();
+            const chatId = chatLink.getAttribute('data-chat-id');
+            chats.forEach(chat => {
+                if (chat.getAttribute('data-chat-id') === chatId) {
+                    chat.classList.add('active-chat');
+                } else {
+                    chat.classList.remove('active-chat');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
+

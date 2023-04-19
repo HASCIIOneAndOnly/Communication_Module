@@ -1,0 +1,39 @@
+#chat-list {
+    float: left;
+    width: 25%;
+    height: 100%;
+    border-right: 1px solid black;
+}
+
+#chat-window {
+    float: left;
+    width: 75%;
+    height: 100%;
+}
+
+.chat {
+    display: none;
+}
+
+.active-chat {
+    display: block;
+}
+
+/* CSS стиль для кнопки добавления чата */
+#add-chat-btn {
+    margin-top: 10px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#add-chat-btn:hover {
+    background-color: #3e8e41;
+}
