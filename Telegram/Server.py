@@ -12,6 +12,11 @@ db = DBHelper()
 TOKEN = "6039921783:AAF1cemhYX_oUXSfSPAPh9NRv8H7oK73-FM"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
+welcoming_message = "Добрый день ! \n" \
+                    "Вы обратились в компанию Орензнак\n" \
+                    "Мы рады приветствовать Вас\n" \
+                    "Пожалуйста выберите\n"
+
 
 def tg_setup():
     db.setup()
@@ -61,9 +66,11 @@ def handle_updates(updates):
             send_message("Select an item to delete", chat, keyboard)
         elif text == "/start":
             send_message(
-                "Welcome to your personal To Do list. "
-                "Send any text to me and I'll store it as an item. Send /done to remove items",
+                welcoming_message,
                 chat)
+            items_in_keyboard = ["Оформить Заказ", "Информация о заказе", "Связаться с менеджером"]
+            keyboard = build_keyboard(items_in_keyboard)
+            send_message("Выберите наиболее подходящую причину обращения:", chat, keyboard)
         elif text.startswith("/"):
             continue
         elif text in items:

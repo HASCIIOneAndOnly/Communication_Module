@@ -10,7 +10,8 @@
   <component name="TemplatesService">
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/Authorization_Registration_PasswordRecovery/templates" />
+        <option value="$MODULE_DIR$/Telegram/templates" />
+        <option value="$MODULE_DIR$/AuthRegRec/templates" />
       </list>
     </option>
   </component>
