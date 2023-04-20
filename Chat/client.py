@@ -22,6 +22,7 @@ def send_message(sock, name):
 
 socket_server = socket.socket()
 
+
 name = input('Введите имя: ')
 socket_server.connect(('127.0.0.1', 5058))
 socket_server.send(name.encode())
