@@ -1,22 +1,22 @@
-import socket
 import threading
+import socket
 
-print_lock = threading.Lock()
 
+lock = threading.Lock()
 
 def receive_message(conn):
     while True:
         message = conn.recv(1024)
         if message:
             message = message.decode()
-            with print_lock:
+            with lock:
                 print(f'{client}: {message}')
 
 
 def send_message(conn, name):
     while True:
         message = input()
-        with print_lock:
+        with lock:
             conn.send(message.encode())
 
 
@@ -42,4 +42,3 @@ send_thread.start()
 
 send_thread.join()
 receive_thread.join()
-
