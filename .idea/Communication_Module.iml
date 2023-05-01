@@ -6,6 +6,9 @@
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (Communication_Module)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jquery-3.5.1.slim" level="application" />
+    <orderEntry type="library" name="@popperjs/core" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="templateFileTypes">
@@ -21,6 +24,9 @@
         <option value="$MODULE_DIR$/Telegram/templates" />
         <option value="$MODULE_DIR$/AuthRegRec/templates" />
         <option value="$MODULE_DIR$/HomePage/templates" />
+        <option value="$MODULE_DIR$/Settings/templates" />
+        <option value="$MODULE_DIR$/DeleteThisFile/templates" />
+        <option value="$MODULE_DIR$/mainInterface/templates" />
       </list>
     </option>
   </component>

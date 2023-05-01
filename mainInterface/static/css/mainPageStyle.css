@@ -1,0 +1,428 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+:root {
+    --mainColor: #3390ec;
+    --whiteColor: #ffffff;
+    --blackColor: #000000;
+    --borderColor: #dfe1e5;
+    --greenColor: #0ac630;
+    --unreadMessage: #c4c9cc;
+    --grayColor: #707579;
+    --body-color: #273346;
+    --input-bg: #f8f8fa;
+}
+
+html {
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+    min-width: 700px;
+}
+
+body {
+    font-weight: 400;
+    overflow: hidden;
+    min-width: 800px;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+main {
+    display: flex;
+}
+
+/*Start Aside Section*/
+.left-side {
+    position: relative;
+
+    min-height: 100vh;
+    background-color: var(--whiteColor);
+    border-right: .1rem solid var(--borderColor);
+    box-shadow: 0 1px 1px 1px rgba(0 0 0 / .05);
+}
+
+@media (max-width: 800px) {
+    .left-side {
+        width: 80px;
+    }
+
+    .search-box {
+        display: none;
+        visibility: hidden;
+    }
+
+    .toggle-button {
+        display: none;
+        visibility: hidden;
+    }
+
+    .add-chat-box-btn {
+        display: none;
+        visibility: hidden;
+    }
+
+    .right-side .bottom-panel textarea {
+        width: calc(100% - 400px);
+        margin-right: -12px;
+    }
+
+    .right-side .send-button {
+        bottom: 0;
+        margin-left: 0;
+    }
+
+    .right-side .clear-message-box-button {
+        position: absolute;
+        left: 100px;
+    }
+}
+
+.left-side .header-container {
+    padding: 1rem;
+    min-height: 3.5rem;
+    background-color: var(--whiteColor);
+}
+
+.left-side .header-container .header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.left-side .header .toggle-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.left-side .header .toggle-button:hover {
+    background-color: #f5f5f5;
+}
+
+.left-side .header .toggle-button i {
+    position: absolute;
+    font-size: 1.8rem;
+    transition: all .3s ease-in-out;
+}
+
+.left-side .header .toggle-button .fa-arrow-left {
+    visibility: hidden;
+    opacity: 0;
+}
+
+#drop-down-reallocation-block {
+    position: relative;
+    display: inline-block;
+    background-color: transparent;
+    width: 25px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    float: left;
+
+    margin-right: 5px;
+    margin-left: 10px;
+}
+
+#drop-down-reallocation {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    top: 100%;
+}
+
+#drop-down-reallocation li {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+#drop-down-reallocation-block.active #drop-down-reallocation {
+    display: block;
+}
+
+#drop-down-reallocation-block.active .toggle-button {
+    background-color: #3e8e41;
+}
+
+#drop-down-reallocation li:hover {
+    background-color: #3e8e41;
+}
+
+
+.left-side .header .search-box {
+    position: relative;
+    border: .1rem solid var(--borderColor);
+    border-radius: 2.2rem;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all .3s ease-in-out;
+}
+
+.left-side .header .search-box i {
+    color: var(--grayColor);
+    font-size: 1.6rem;
+    opacity: .6;
+}
+
+.left-side .header .search-box input {
+    position: relative;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.left-side .header .search-box input::placeholder {
+    color: #707579;
+    font-size: 1.6rem;
+    font-weight: 500;
+    opacity: .6;
+}
+
+.left-side .header.focus .search-box {
+    border: .2rem solid var(--mainColor);
+}
+
+.left-side .header.focus .search-box i {
+    color: var(--mainColor);
+}
+
+.left-side .header.focus .toggle-button .fa-bars {
+    transform: rotate(180deg);
+    opacity: 0;
+}
+
+.left-side .header.focus .toggle-button .fa-arrow-left {
+    transform: rotate(360deg);
+    visibility: visible;
+    opacity: 1;
+}
+
+.left-side .body-container {
+    position: fixed;
+    top: 7rem;
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0 .5rem;
+}
+
+.left-side .body-container .chat-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.left-side .body-container .chat-list .chat-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    min-height: 7rem;
+    padding: 0 1rem;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.left-side .chat-list .chat-box .chat-img {
+    width: 5.4rem;
+    height: 5.4rem;
+    flex-basis: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-side .chat-list .chat-box .chat-img img {
+    max-width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.left-side .chat-list .chat-box .chat-details {
+    flex-basis: 85%;
+}
+
+.left-side .chat-list .chat-box .chat-details {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.left-side .chat-box .chat-details .chat-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-side .chat-box .chat-details .chat-title h3 {
+    text-transform: capitalize;
+    font-weight: 500;
+    font-size: 1.6rem;
+}
+
+.left-side .chat-box .chat-details .chat-title span {
+    color: var(--grayColor);
+    font-size: 1.2rem;
+}
+
+.left-side .chat-box .chat-details .chat-msg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-side .chat-box .chat-details .chat-msg p {
+    font-size: 1.6rem;
+    color: var(--grayColor);
+}
+
+.left-side .chat-box .chat-details .chat-msg span {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    color: var(--whiteColor);
+    background-color: var(--greenColor);
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -1rem;
+}
+
+.left-side .body-container .chat-list .chat-box:hover {
+    background-color: hsla(207, 4%, 46%, .08);
+    border-radius: 1rem;
+}
+
+::-webkit-scrollbar {
+    width: .5rem;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background: var(--borderColor)
+}
+
+.left-side .add-chat-box-btn {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    background-color: var(--mainColor);
+    color: var(--whiteColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.left-side .files {
+    position: relative;
+    max-width: 42rem;
+    min-width: 40rem;
+    height: 91.1vh;
+    background-color: var(--whiteColor);
+    z-index: 1;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0);
+    transition: all .5s ease;
+}
+
+.left-side .files.active {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.left-side .files .menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: .1rem solid var(--borderColor);
+}
+
+.left-side .files .menu li {
+    position: relative;
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: var(--grayColor);
+    cursor: pointer;
+}
+
+.left-side .files .menu li.active {
+    color: var(--mainColor);
+}
+
+.left-side .files .menu li.active::before {
+    content: "";
+    position: absolute;
+    width: 4rem;
+    height: .2rem;
+    background-color: var(--mainColor);
+    bottom: -1rem;
+    left: 0;
+}
+
+.left-side .files .profiles {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: .1rem solid var(--borderColor);
+}
+
+.left-side .files .profiles li {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.left-side .files .profiles li img {
+    width: 5.4rem;
+    height: 5.4rem;
+    border-radius: 50%;
+}
+
+.left-side .files .profiles li h4 {
+    text-transform: capitalize;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--grayColor);
+}

@@ -1,0 +1,51 @@
+.quick-commands {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.quick-commands__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.quick-commands__add-button,
+.quick-commands__delete-button {
+  border: none;
+  background-color: #ccc;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.quick-commands__add-button:disabled {
+  background-color: #f2f2f2;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.quick-commands__content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quick-commands__input {
+  width: 45%;
+}
+
+.quick-commands__input label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.quick-commands__input input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}

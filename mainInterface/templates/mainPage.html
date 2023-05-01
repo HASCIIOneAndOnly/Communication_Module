@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/css/mainPageStyle.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/right-chat-block.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/Settings.css">
+    <link rel="shortcut icon" href="../static/img/orenComLogo.png"/>
+    <title>ОренКом</title>
+</head>
+
+<body id="body">
+<main>
+    <section class="left-side" id="left-side">
+        <div class="header-container">
+            <div class="header">
+                <div class="toggle-button" id="toggle-reallocation-button">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div id="drop-down-reallocation-block">
+                    <ul id="drop-down-reallocation">
+                        <li class="response">
+<!--                            <a href="{{ url_for('settings') }}" class="settings-button">Настройки</a>-->
+                            <p id="settings-button">Настройки</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <label>
+                        <input type="text" placeholder="Search">
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="body-container">
+            <div class="chat-list" id="chat-list">
+                <div class="chat-box" id="Msg">
+                    <div class="chat-img">
+                        <img src="../static/img/profile-1.png" alt="">
+                    </div>
+                    <div class="chat-details">
+                        <div class="chat-title">
+                            <h3>alex smith</h3>
+                            <span>06:04 PM</span>
+                        </div>
+                        <div class="chat-msg">
+                            <p>How to make website using html and css?</p>
+                            <span>1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="files" id="files">
+            <ul class="menu">
+                <li class="active">chats</li>
+                <li>media</li>
+                <li>links</li>
+                <li>files</li>
+                <li>music</li>
+                <li>voice</li>
+            </ul>
+            <ul class="profiles">
+                <li>
+                    <img src="../static/img/profile-1.png" alt="">
+                    <h4>alex smith</h4>
+                </li>
+                <li>
+                    <img src="../static/img/profile-2.png" alt="">
+                    <h4>amelia</h4>
+                </li>
+            </ul>
+        </div>
+        <div class="add-chat-box-btn" id="add-chat-box-btn">
+            <i class="fas fa-pen"></i>
+        </div>
+    </section>
+    <section class="right-side">
+        <div class="container" id="chatBox">
+            <!-- This block is generated be JS code in loadNecessaryDataForChosenChat(chatItem) function
+            when one of the chat-boxes on the left side of the app is clicked -->
+            <div class="chat-box-user-info" id="chatBoxUserInfo">
+
+            </div>
+            <div class="bottom-panel">
+                <button class="paper-clip-button"><i class="fas fa-paperclip"></i></button>
+                <div id="popup-fast-responses-block">
+                    <button class="fast-responses-button" id="fast-responses-button"><i class="fa-solid fa-book"></i>
+                    </button>
+                    <ul id="popup-container">
+                        <li class="response">
+                            <p class="short-version">/Привет</p>
+                            <p class="full-version">Добрый день! Рады Вас приветствовать !</p>
+                        </li>
+                    </ul>
+                </div>
+                <label>
+                    <textarea class="message-input" id="message-input-box" placeholder="Type your message"></textarea>
+                    <button class="clear-message-box-button" id="clear-message-box-button">x</button>
+                </label>
+                <button class="send-button">Send</button>
+            </div>
+        </div>
+    </section>
+</main>
+<script src="https://kit.fontawesome.com/9e5ba2e3f5.js" crossorigin="anonymous"></script>
+<script src="../static/js/mainPageJS.js"></script>
+</body>
+
+</html>

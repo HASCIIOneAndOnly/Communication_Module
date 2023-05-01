@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='Chat.css') }}">
 </head>
 <body>
+<div class="forwarder">
+    <button id="settings-btn">Настройки</button>
+</div>
 <div id="chat-list">
     <h2>Список чатов</h2>
     <ul>
@@ -15,6 +18,18 @@
     <h2>Выбранный чат</h2>
 </div>
 <script>
+    const settingsBtn = document.querySelector('#settings-btn');
+    settingsBtn.addEventListener('click', () => {
+        fetch('/settings')  // отправляем GET-запрос на сервер
+            .then(response => response.text())  // получаем HTML-код страницы настроек
+            .then(html => {
+                const settingsPage = document.createElement('div');
+                settingsPage.innerHTML = html;
+                document.body.appendChild(settingsPage);
+            });
+    });
+
+
     chatList = document.querySelector('#chat-list ul');
     chatWindow = document.querySelector('#chat-window');
     addChatBtn = document.querySelector('#add-chat-btn');
@@ -49,7 +64,7 @@
             });
         });
 
-        chats = document.querySelectorAll('.chat');
+        var chats = document.querySelectorAll('.chat');
     });
 
     chatLinks.forEach(chatLink => {
