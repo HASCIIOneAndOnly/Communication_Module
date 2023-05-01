@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Чат</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port);
+
+            socket.on('new_message', function (data) {
+                const chatMessages = document.getElementById('chat-messages');
+                const chatMessage = document.createElement('p');
+                chatMessage.innerHTML = `<strong>${data.username}</strong> (${data.timestamp}): ${data.message}`;
+                chatMessages.appendChild(chatMessage);
+            });
+
+            const form = document.getElementById('send-message-form');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const messageInput = document.getElementById('message-input');
+                const message = messageInput.value;
+                const recipientId = form.querySelector('input[name="recipient_id"]').value;
+                const chatId = form.querySelector('input[name="chat_id"]').value;
+                if (message.trim()) {
+                    socket.emit('send_message', {message: message, recipient_id: recipientId, chat_id: chatId});
+                    messageInput.value = '';
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>Чат</h1>
+<div id="chat-messages">
+    {% for message in messages %}
+        <p><strong>{{ message.sender.username }}</strong> ({{ message.timestamp }}): {{ message.message }}</p>
+    {% endfor %}
+</div>
+<form method="post" id="send-message-form">
+    <input type="text" name="message" id="message-input" placeholder="Type your message..." required>
+    <input type="hidden" name="recipient_id" value="{{ recipient.id }}">
+    <input type="hidden" name="chat_id" value="{{ chat_id }}">
+    <button type="submit">Send</button>
+</form>
+<a href="{{ url_for('logout') }}">Выйти</a>
+</body>
+</html>
