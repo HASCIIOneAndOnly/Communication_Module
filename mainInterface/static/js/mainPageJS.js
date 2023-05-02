@@ -2,12 +2,13 @@ let header = document.querySelector('.header'),
     inputSearch = document.querySelector('.search-box input'),
     faArrowLeft = document.querySelector('.fa-arrow-left'),
     files = document.querySelector('#files'),
-    rightSideContainer = document.getElementById('right-side-container');
-msg = document.querySelector('#Msg');
-body = document.getElementById('body');
-
-leftSide = document.getElementById('left-side');
-chatList = document.getElementById('chat-list');
+    rightSideContainer = document.getElementById('right-side-container'),
+    msg = document.querySelector('#Msg'),
+    body = document.getElementById('body'),
+    leftSide = document.getElementById('left-side'),
+    chatList = document.getElementById('chat-list'),
+    // Script for the add-button for adding new chats
+    chatBoxUserInfo = document.getElementById('chatBoxUserInfo');
 
 
 inputSearch.addEventListener('focus', () => {
@@ -28,21 +29,28 @@ body.addEventListener('loadstart', function () {
     chatList.load();
 })
 
-// Script for the add-button for adding new chats
-chatBoxUserInfo = document.getElementById('chatBoxUserInfo');
 
-function fetchChats() {
-    // fetch chat data from server
-    fetch('/chats')
-        .then(response => response.json())
-        .then(chatData => {
-            // clear existing chat list content
-            chatList.innerHTML = '';
-            // create chat box for each chat item
-            chatData.forEach(chatItem => {
-                const chatBoxNew = document.createElement('div');
-                chatBoxNew.classList.add('chat-box');
-                chatBoxNew.innerHTML = `
+async function fetchChats() {
+    let response;
+    let chatData;
+    let success = false;
+
+    while (!success) {
+        try {
+            response = await fetch('/chats');
+            chatData = await response.json();
+            success = true;
+        } catch (err) {
+            console.error('Error fetching chats. Retrying in 0.5 seconds...', err);
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+    }
+    chatList.innerHTML = '';
+    // create chat box for each chat item
+    chatData.forEach(chatItem => {
+        const chatBoxNew = document.createElement('div');
+        chatBoxNew.classList.add('chat-box');
+        chatBoxNew.innerHTML = `
                     <div class="chat-img">
                         <img src="${chatItem.profile_image}" alt="">
                     </div>
@@ -57,19 +65,55 @@ function fetchChats() {
                         </div>
                     </div>
                 `;
-                chatBoxNew.addEventListener('click', () => {
-                    chatBoxUserInfo.innerHTML = '';
-                    bottomPanel.style.display = "inherit";
-                    loadNecessaryDataForChosenChat(chatItem);
-                    rightSideContainer.classList.add('active');
-                    fetchFastResponses();
-                })
-                chatList.appendChild(chatBoxNew);
-            });
-        });
+        chatBoxNew.addEventListener('click', () => {
+            chatBoxUserInfo.innerHTML = '';
+            bottomPanel.style.display = "inherit";
+            loadNecessaryDataForChosenChat(chatItem);
+            rightSideContainer.classList.add('active');
+            fetchFastResponses();
+        })
+        chatList.appendChild(chatBoxNew);
+    });
 }
 
 
+// function fetchChats() {
+//     // fetch chat data from server
+//     fetch('/chats')
+//         .then(response => response.json())
+//         .then(chatData => {
+//             // clear existing chat list content
+//             chatList.innerHTML = '';
+//             // create chat box for each chat item
+//             chatData.forEach(chatItem => {
+//                 const chatBoxNew = document.createElement('div');
+//                 chatBoxNew.classList.add('chat-box');
+//                 chatBoxNew.innerHTML = `
+//                     <div class="chat-img">
+//                         <img src="${chatItem.profile_image}" alt="">
+//                     </div>
+//                     <div class="chat-details">
+//                         <div class="chat-title">
+//                             <h3>${chatItem.name}</h3>
+//                             <span>${chatItem.time}</span>
+//                         </div>
+//                         <div class="chat-msg">
+//                             <p>${chatItem.messages[0]}</p>
+//                             <span>${chatItem.unreadCount}</span>
+//                         </div>
+//                     </div>
+//                 `;
+//                 chatBoxNew.addEventListener('click', () => {
+//                     chatBoxUserInfo.innerHTML = '';
+//                     bottomPanel.style.display = "inherit";
+//                     loadNecessaryDataForChosenChat(chatItem);
+//                     rightSideContainer.classList.add('active');
+//                     fetchFastResponses();
+//                 })
+//                 chatList.appendChild(chatBoxNew);
+//             });
+//         })
+// }
 function loadNecessaryDataForChosenChat(chatItem) {
 
     const contentHeader = document.createElement('div');
@@ -128,3 +172,7 @@ function loadNecessaryDataForChosenChat(chatItem) {
 
     chatBoxUserInfo.appendChild(messageBox);
 }
+
+// import pRetry, {AbortError} from 'p-retry';
+// import fetch from 'node-fetch';
+

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "p-retry": "^5.1.2"
+  }
+}
