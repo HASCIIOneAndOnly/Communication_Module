@@ -64,8 +64,7 @@ main {
     }
 
     .toggle-button {
-        display: none;
-        visibility: hidden;
+        left: 30px;
     }
 
     .add-chat-box-btn {
