@@ -19,14 +19,20 @@ function activateVisualPartFastResponses() {
 
 async function fetchFastResponses() {
     let response;
+    let numberOfAttemptsToFail = 5;
     let success = false;
 
     let fastResponses;
     while (!success) {
+        if (numberOfAttemptsToFail === 0) {
+            console.log("Failed while fetching fast commands");
+            throw new Error("Can't fetch fast commands");
+        }
         try {
             response = await fetch('/fastResponses');
             fastResponses = await response.json();
             success = true;
+            numberOfAttemptsToFail--;
         } catch (err) {
             console.error('Error fetching chats. Retrying in 0.5 seconds...', err);
             await new Promise(resolve => setTimeout(resolve, 500));

@@ -29,6 +29,9 @@ settingsButton.addEventListener('click', function () {
 });
 
 chatsReallocationButton.addEventListener('click', function () {
-    fetchChats();
+    chatBoxUserInfo.innerHTML = "";
+    fetchChats().then(function () {
+        console.log("bad chat fetching in chatsReallocationButton")
+    });
     addChatBtn.style.display = "flex";
 })
