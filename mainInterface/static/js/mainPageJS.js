@@ -36,7 +36,8 @@ async function fetchChats() {
             throw new Error("Can't fetch chats");
         }
         try {
-            response = await fetch('/chats');
+            response = await fetch('/user_list');
+            // response = await fetch('/chats');
             chatData = await response.json();
             success = true;
         } catch (err) {
@@ -74,6 +75,7 @@ async function fetchChats() {
         chatList.appendChild(chatBoxNew);
     });
 }
+
 
 function loadNecessaryDataForChosenChat(chatItem) {
 
