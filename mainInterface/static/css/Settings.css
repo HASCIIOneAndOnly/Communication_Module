@@ -1,6 +1,26 @@
+/*Block with css styling for Settings (accessible in dropdown menu in the app via clicking on bars in
+the upper left corner of the app)*/
+
+
+/*Block of css styling for settings list (left part of the app)*/
 .left-side .body-container .chat-list {
     display: flex;
     flex-direction: column;
+}
+
+.left-side .chat-list .settings-box .settings-image {
+    width: 5.4rem;
+    height: 5.4rem;
+    flex-basis: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-side .chat-list .settings-box .settings-image img {
+    max-width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .left-side .body-container .chat-list .settings-box {
@@ -44,4 +64,43 @@
 .left-side .body-container .chat-list .settings-box:hover {
     background-color: hsla(207, 4%, 46%, .08);
     border-radius: 1rem;
+}
+
+
+/*Block of css styling for settings themselves (right part of the app)*/
+
+.container #fast-responses-title {
+    position: relative;
+    background-color: var(--whiteColor);
+    padding: 0 1rem;
+    display: flex;
+    height: 7rem;
+    z-index: 1;
+}
+
+.container #fast-responses-title .title-image {
+    width: 4.2rem;
+    height: 4.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container #fast-responses-title .title-image img {
+    border-radius: 50%;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+.container #fast-responses-title {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+    gap: .5rem;
+}
+
+.container #fast-responses-title h3 {
+    text-transform: capitalize;
+    font-size: 1.6rem;
+    font-weight: 500;
 }

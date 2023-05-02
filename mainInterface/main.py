@@ -66,10 +66,5 @@ def get_fast_responses():
     return jsonify(fast_responses)
 
 
-@app.route('/settings')
-def settings():
-    return render_template('Settings.html')
-
-
 if __name__ == '__main__':
     app.run(debug=True, port=60000)

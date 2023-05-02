@@ -8,7 +8,7 @@ import os
 from uuid import uuid4
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amepifanov:fhntv2003@localhost:5050/course_project_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 users_sockets = {}

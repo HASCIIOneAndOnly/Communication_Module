@@ -3,6 +3,7 @@
     width: 100%;
     background: linear-gradient(132deg, #d5d88d 0%, #88b884 100%);
     min-width: 400px;
+    display: flex;
 }
 
 .right-side::before {

@@ -23,9 +23,14 @@
                 </div>
                 <div id="drop-down-reallocation-block">
                     <ul id="drop-down-reallocation">
-                        <li class="response">
-<!--                            <a href="{{ url_for('settings') }}" class="settings-button">Настройки</a>-->
-                            <p id="settings-button">Настройки</p>
+                        <li class="settings-reallocation-button">
+                            <p id="settings-button-settings">Настройки</p>
+                        </li>
+                        <li class="settings-reallocation-button">
+                            <p id="settings-button-chats">Чаты</p>
+                        </li>
+                        <li class="settings-reallocation-button">
+                            <p id="settings-button-contacts">Контакты</p>
                         </li>
                     </ul>
                 </div>
@@ -80,14 +85,14 @@
             <i class="fas fa-pen"></i>
         </div>
     </section>
-    <section class="right-side">
-        <div class="container" id="chatBox">
+    <section class="right-side" id="right-side">
+        <div class="container" id="right-side-container">
             <!-- This block is generated be JS code in loadNecessaryDataForChosenChat(chatItem) function
             when one of the chat-boxes on the left side of the app is clicked -->
             <div class="chat-box-user-info" id="chatBoxUserInfo">
 
             </div>
-            <div class="bottom-panel">
+            <div class="bottom-panel" id="right-side-bottom-panel">
                 <button class="paper-clip-button"><i class="fas fa-paperclip"></i></button>
                 <div id="popup-fast-responses-block">
                     <button class="fast-responses-button" id="fast-responses-button"><i class="fa-solid fa-book"></i>
