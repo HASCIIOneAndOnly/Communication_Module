@@ -24,7 +24,6 @@ body.addEventListener('loadstart', function () {
     chatList.load();
 })
 
-
 async function fetchChats() {
     let response;
     let chatData;

@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="../static/css/mainPageStyle.css">
     <link rel="stylesheet" type="text/css" href="../static/css/right-chat-block.css">
     <link rel="stylesheet" type="text/css" href="../static/css/Settings.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/chat-creation-block.css">
     <link rel="shortcut icon" href="../static/img/orenComLogo.png"/>
     <title>ОренКом</title>
 </head>
@@ -81,8 +82,15 @@
                 </li>
             </ul>
         </div>
-        <div class="add-chat-box-btn" id="add-chat-box-btn">
+        <div class="add-chat-btn" id="add-chat-btn">
             <i class="fas fa-pen"></i>
+        </div>
+        <div id="popup-chat-creation-block">
+            <ul id="popup-container-chat-creation">
+                <li class="chat-creation-option">
+                    <p class="chat-creation-option-personal">Создать личный чат</p>
+                </li>
+            </ul>
         </div>
     </section>
     <section class="right-side" id="right-side">
@@ -120,6 +128,7 @@
 <script src="../static/js/onLoad.js"></script>
 <script src="../static/js/reallocationDropDownMenu.js"></script>
 <script src="../static/js/settings.js"></script>
+<script src="../static/js/chatCreationBlock.js"></script>
 </body>
 
 </html>

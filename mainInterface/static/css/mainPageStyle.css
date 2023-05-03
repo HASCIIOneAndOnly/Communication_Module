@@ -67,11 +67,6 @@ main {
         left: 30px;
     }
 
-    .add-chat-box-btn {
-        display: none;
-        visibility: hidden;
-    }
-
     .right-side .bottom-panel textarea {
         width: calc(100% - 400px);
         margin-right: -12px;
@@ -330,22 +325,6 @@ main {
 ::-webkit-scrollbar-thumb {
     border-radius: 1rem;
     background: var(--borderColor)
-}
-
-.left-side .add-chat-box-btn {
-    position: absolute;
-    bottom: 2rem;
-    right: 2rem;
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    background-color: var(--mainColor);
-    color: var(--whiteColor);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    cursor: pointer;
 }
 
 .left-side .files {

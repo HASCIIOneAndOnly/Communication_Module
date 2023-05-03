@@ -1,0 +1,76 @@
+#add-chat-btn {
+    bottom: 20px;
+    left: 310px;
+    border-radius: 50%;
+    background-color: var(--mainColor);
+    color: var(--whiteColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    transition: all .3s ease;
+}
+
+#add-chat-btn:hover {
+    background-color: aqua;
+}
+
+
+#popup-chat-creation-block {
+    position: relative;
+    display: inline-block;
+    background-color: transparent;
+    width: 140px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    float: left;
+
+    margin-right: 5px;
+    margin-left: 10px;
+}
+
+#popup-container-chat-creation {
+    display: none;
+    position: absolute;
+    background-color: transparent;
+    min-width: 160px;
+    left: 15px;
+    bottom: 15px;
+    padding: 150px 100px 50px;
+    box-sizing: border-box;
+}
+
+#add-chat-btn:hover ~ #popup-chat-creation-block #popup-container-chat-creation {
+    display: block;
+}
+
+#popup-chat-creation-block:hover #popup-container-chat-creation {
+    display: block;
+}
+
+#popup-container-chat-creation li {
+    color: black;
+    padding: 10px 19px;
+    text-decoration: none;
+    display: block;
+    width: 200px;
+    background-color: #f1f1f1;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+#popup-chat-creation-block.active #popup-container-chat-creation {
+    display: block;
+}
+
+#popup-chat-creation-block.active #add-chat-btn {
+    background-color: #3e8e41;
+}
+
+#popup-container-chat-creation li:hover {
+    background-color: #3e8e41;
+}
