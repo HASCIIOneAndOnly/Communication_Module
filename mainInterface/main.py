@@ -18,24 +18,20 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-# @app.route('/', methods=['GET', 'POST'])
-# def index():
-#     return render_template('mainPage.html')
-
-
 @app.route('/user_list')
-# @login_required
+@login_required
 def user_list():
-    users = User.query.all()
-    user_chats = UserChat.query.filter_by(user_id=current_user.id).all()
-    chat_usernames = {}
-    for user_chat in user_chats:
-        recipient_id = UserChat.query.filter(UserChat.chat_id == user_chat.chat_id,
-                                             UserChat.user_id != current_user.id).first().user_id
-        recipient = User.query.get(recipient_id)
-        chat_usernames[user_chat.chat_id] = recipient.username
-
-    return render_template('user_list.html', users=users, chat_usernames=chat_usernames)
+    # users = User.query.all()
+    # user_chats = UserChat.query.filter_by(user_id=current_user.id).all()
+    # chat_usernames = {}
+    # for user_chat in user_chats:
+    #     recipient_id = UserChat.query.filter(UserChat.chat_id == user_chat.chat_id,
+    #                                          UserChat.user_id != current_user.id).first().user_id
+    #     recipient = User.query.get(recipient_id)
+    #     chat_usernames[user_chat.chat_id] = recipient.username
+    #
+    # return render_template('user_list.html', users=users, chat_usernames=chat_usernames)
+    return render_template('mainPage.html')
 
 
 @app.route('/chats')
@@ -117,9 +113,9 @@ def handle_disconnect():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
 
         if user and user.password == password:
             login_user(user)
@@ -151,20 +147,20 @@ def generate_unique_chat_id():
     return str(uuid4())
 
 
-def create_chats_for_new_user(new_user):
-    existing_users = User.query.filter(User.id < new_user.id).all()
-    for user in existing_users:
-        if user.id != new_user.id:
-            chat_id = generate_unique_chat_id()
-            chat = Chat(id=chat_id)
-            user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id)
-            user2_chat = UserChat(user_id=user.id, chat_id=chat_id)
-
-            db.session.add(chat)
-            db.session.add(user1_chat)
-            db.session.add(user2_chat)
-
-    db.session.commit()
+# def create_chats_for_new_user(new_user):
+#     existing_users = User.query.filter(User.id < new_user.id).all()
+#     for user in existing_users:
+#         if user.id != new_user.id:
+#             chat_id = generate_unique_chat_id()
+#             chat = Chat(id=chat_id)
+#             user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id)
+#             user2_chat = UserChat(user_id=user.id, chat_id=chat_id)
+#
+#             db.session.add(chat)
+#             db.session.add(user1_chat)
+#             db.session.add(user2_chat)
+#
+#     db.session.commit()
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -178,7 +174,7 @@ def register():
 
         if confirm_password != password:
             flash("Пароли не совпадают")
-            return redirect('register')
+            return redirect(url_for('register'))
         if User.query.filter_by(email=email).first():
             flash("Пользователь с таким именем уже существует")
             return redirect(url_for('register'))
@@ -187,7 +183,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        create_chats_for_new_user(new_user)  # Добавьте эту строку
+        # create_chats_for_new_user(new_user)
 
         flash("Успешная регистрация")
         return redirect(url_for('login'))
@@ -199,4 +195,3 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=5700)
-    # app.run(debug=True, port=60000)

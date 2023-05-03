@@ -30,14 +30,15 @@ async function fetchChats() {
     let chatData;
     let success = false;
     let numberOfAttemptsToFail = 10;
+    await new Promise(resolve => setTimeout(resolve, 500));
     while (!success) {
         if (numberOfAttemptsToFail === 0) {
             console.log("Failed while fetching chats");
             throw new Error("Can't fetch chats");
         }
         try {
-            response = await fetch('/user_list');
-            // response = await fetch('/chats');
+            numberOfAttemptsToFail--;
+            response = await fetch('/chats');
             chatData = await response.json();
             success = true;
         } catch (err) {

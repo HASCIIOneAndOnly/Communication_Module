@@ -25,7 +25,8 @@ class User(db.Model, UserMixin):
 
 
 class Chat(db.Model):
-    id = db.Column(db.String(36), primary_key=True)  # Замените строковый тип на числовой
+    chat_name = db.Column(db.String(120), default='Новый чат')
+    id = db.Column(db.String(36), primary_key=True)
     messages = db.relationship('Message', backref='chat', lazy=True)
     user_chats = db.relationship('UserChat', back_populates='chat')
     # modded
