@@ -53,18 +53,19 @@ async function fetchChats() {
     chatData.forEach(chatItem => {
         const chatBoxNew = document.createElement('div');
         chatBoxNew.classList.add('left-side-object-from-list');
+
+        // <div className="left-side-object-from-list-img">
+        //     <img src="${chatItem.profile_image}" alt="">
+        // </div>
+        // <span>${chatItem.user.last_seen}</span>
         chatBoxNew.innerHTML = `
-                    <div class="left-side-object-from-list-img">
-                        <img src="${chatItem.profile_image}" alt="">
-                    </div>
                     <div class="left-side-object-from-list-details">
                         <div class="left-side-object-from-list-details-title">
-                            <h3>${chatItem.name}</h3>
-                            <span>${chatItem.time}</span>
+                            <h3>${chatItem.chat_name}</h3>
                         </div>
                         <div class="left-side-object-from-list-details-subtitle">
-                            <p>${chatItem.messages[0]}</p>
-                            <span>${chatItem.unreadCount}</span>
+                            <p>${chatItem.chat.messages}</p>
+                            <span>${chatItem.unread_messages_counter}</span>
                         </div>
                     </div>
                 `;

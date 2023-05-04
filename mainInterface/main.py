@@ -33,38 +33,61 @@ def mainPage():
     return render_template('mainPage.html')
 
 
+def createChatsForNewUser(new_user):
+    existing_users = User.query.filter(User.id != new_user.id).all()
+    for user in existing_users:
+        chat_id = generate_unique_chat_id()
+        chat = Chat(id=chat_id)
+        user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id, chat_name=user.username)
+        user2_chat = UserChat(user_id=user.id, chat_id=chat_id, chat_name=user.username)
+
+        db.session.add(chat)
+        db.session.add(user1_chat)
+        db.session.add(user2_chat)
+
+    db.session.commit()
+
+
 @app.route('/chats')
 def get_chats():
-    # Here you would retrieve the chat data from your database or other data source
-    # and format it as a list of dictionaries
-    chat_data = [
-        {
-            "name": "Alex Smith",
-            "profile_image": "../static/img/profile-1.png",
-            "time": "06:04 PM",
-            'messages': ['How to make website using html and css?'],
-            "unreadCount": 1,
-            'last_seen': '10 minutes ago',
-        },
-        {
-            "name": "John Doe",
-            "profile_image": "static/img/profile-2.png",
-            "time": "08:30 AM",
-            'messages': ['How to make website using html and css?'],
-            "unreadCount": 0,
-            'last_seen': '10 minutes ago',
-        },
-        {
-            "name": "Jane Doe",
-            "profile_image": "../static/img/profile-3.png",
-            "time": "Yesterday",
-            'messages': ['How to make website using html and css?'],
-            "unreadCount": 2,
-            'last_seen': '10 minutes ago',
-        }
-    ]
-    # Return the chat data as a JSON object
-    return jsonify(chat_data)
+    user_chats = UserChat.query.filter_by(user_id=current_user.id).all()
+    serialized_chats = [chat.serialize() for chat in user_chats]
+    return jsonify(serialized_chats)
+
+    # chats = Chat.query.filter(Chat.id != current_user.id).all()
+    # serialized_users = [user.serialize() for user in chats]
+    # return jsonify(serialized_users)
+
+    # # Here you would retrieve the chat data from your database or other data source
+    # # and format it as a list of dictionaries
+    # chat_data = [
+    #     {
+    #         "name": "Alex Smith",
+    #         "profile_image": "../static/img/profile-1.png",
+    #         "time": "06:04 PM",
+    #         'messages': ['How to make website using html and css?'],
+    #         "unreadCount": 1,
+    #         'last_seen': '10 minutes ago',
+    #     },
+    #     {
+    #         "name": "John Doe",
+    #         "profile_image": "static/img/profile-2.png",
+    #         "time": "08:30 AM",
+    #         'messages': ['How to make website using html and css?'],
+    #         "unreadCount": 0,
+    #         'last_seen': '10 minutes ago',
+    #     },
+    #     {
+    #         "name": "Jane Doe",
+    #         "profile_image": "../static/img/profile-3.png",
+    #         "time": "Yesterday",
+    #         'messages': ['How to make website using html and css?'],
+    #         "unreadCount": 2,
+    #         'last_seen': '10 minutes ago',
+    #     }
+    # ]
+    # # Return the chat data as a JSON object
+    # return jsonify(chat_data)
 
 
 @app.route('/fastResponses')
@@ -182,9 +205,8 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        # create_chats_for_new_user(new_user)
+        createChatsForNewUser(new_user)
 
-        flash("Успешная регистрация")
         return redirect(url_for('login'))
 
     return render_template('register.html')
