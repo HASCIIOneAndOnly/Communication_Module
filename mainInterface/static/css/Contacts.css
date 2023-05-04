@@ -1,0 +1,45 @@
+
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-title-contacts {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-title-contacts h3 {
+    text-transform: capitalize;
+    font-weight: 500;
+    font-size: 1.6rem;
+}
+
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-last-seen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-last-seen p {
+    font-size: 1.6rem;
+    color: var(--grayColor);
+}
+
+.left-side .left-side-object-list .left-side-object-from-list .left-side-object-from-list-initials-circle {
+    width: 5.4rem;
+    height: 5.4rem;
+    flex-basis: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background-color: #555;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.left-side .left-side-object-list .left-side-object-from-list .left-side-object-from-list-initials-circle span {
+    /*max-width: 100%;*/
+    /*border-radius: 50%;*/
+    /*object-fit: cover;*/
+    text-align: center;
+}
