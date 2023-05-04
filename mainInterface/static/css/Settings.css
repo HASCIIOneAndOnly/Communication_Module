@@ -3,12 +3,12 @@ the upper left corner of the app)*/
 
 
 /*Block of css styling for settings list (left part of the app)*/
-.left-side .body-container .chat-list {
+.left-side .body-container .left-side-object-list {
     display: flex;
     flex-direction: column;
 }
 
-.left-side .chat-list .settings-box .settings-image {
+.left-side .left-side-object-list .settings-box .settings-image {
     width: 5.4rem;
     height: 5.4rem;
     flex-basis: 15%;
@@ -17,13 +17,13 @@ the upper left corner of the app)*/
     justify-content: center;
 }
 
-.left-side .chat-list .settings-box .settings-image img {
+.left-side .left-side-object-list .settings-box .settings-image img {
     max-width: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.left-side .body-container .chat-list .settings-box {
+.left-side .body-container .left-side-object-list .settings-box {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -34,11 +34,11 @@ the upper left corner of the app)*/
     transition: all .3s ease;
 }
 
-.left-side .chat-list .settings-box .chat-details {
+.left-side .left-side-object-list .settings-box .left-side-object-from-list-details {
     flex-basis: 85%;
 }
 
-.left-side .chat-list .settings-box .settings-details {
+.left-side .left-side-object-list .settings-box .settings-details {
     display: flex;
     flex-direction: column;
     gap: .5rem;
@@ -61,7 +61,7 @@ the upper left corner of the app)*/
     font-size: 20px;
 }
 
-.left-side .body-container .chat-list .settings-box:hover {
+.left-side .body-container .left-side-object-list .settings-box:hover {
     background-color: hsla(207, 4%, 46%, .08);
     border-radius: 1rem;
 }

@@ -166,7 +166,7 @@ main {
     transition: all .3s ease;
 }
 
-.right-side .chat-list .chat-box .chat-img {
+.right-side .chat-list .chat-box .left-side-object-from-list-img {
     width: 5.4rem;
     height: 5.4rem;
     flex-basis: 15%;
@@ -175,51 +175,51 @@ main {
     justify-content: center;
 }
 
-.right-side .chat-list .chat-box .chat-img img {
+.right-side .chat-list .chat-box .left-side-object-from-list-img img {
     max-width: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.right-side .chat-list .chat-box .chat-details {
+.right-side .chat-list .chat-box .left-side-object-from-list-details {
     flex-basis: 85%;
 }
 
-.right-side .chat-list .chat-box .chat-details {
+.right-side .chat-list .chat-box .left-side-object-from-list-details {
     display: flex;
     flex-direction: column;
     gap: .5rem;
 }
 
-.right-side .chat-box .chat-details .chat-title {
+.right-side .chat-box .left-side-object-from-list-details .left-side-object-from-list-details-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.right-side .chat-box .chat-details .chat-title h3 {
+.right-side .chat-box .left-side-object-from-list-details .left-side-object-from-list-details-title h3 {
     text-transform: capitalize;
     font-weight: 500;
     font-size: 1.6rem;
 }
 
-.right-side .chat-box .chat-details .chat-title span {
+.right-side .chat-box .left-side-object-from-list-details .left-side-object-from-list-details-title span {
     color: var(--grayColor);
     font-size: 1.2rem;
 }
 
-.right-side .chat-box .chat-details .chat-msg {
+.right-side .chat-box .left-side-object-from-list-details .left-side-object-from-list-details-subtitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.right-side .chat-box .chat-details .chat-msg p {
+.right-side .chat-box .left-side-object-from-list-details .left-side-object-from-list-details-subtitle p {
     font-size: 1.6rem;
     color: var(--grayColor);
 }
 
-.right-side .chat-box .chat-details .chat-msg span {
+.right-side .chat-box .left-side-object-from-list-details .left-side-object-from-list-details-subtitle span {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
@@ -441,7 +441,7 @@ main {
     margin-right: auto;
 }
 
-.content .container .chat-msg {
+.content .container .left-side-object-from-list-details-subtitle {
     position: absolute;
     top: 1rem;
     background-color: var(--whiteColor);
@@ -452,7 +452,7 @@ main {
     gap: 1rem;
 }
 
-.content .container .chat-msg::before {
+.content .container .left-side-object-from-list-details-subtitle::before {
     content: "";
     position: absolute;
     top: 0;
@@ -461,11 +461,11 @@ main {
     border-top: 1rem solid var(--whiteColor);
 }
 
-.content .container .chat-msg p {
+.content .container .left-side-object-from-list-details-subtitle p {
     font-size: 1.6rem;
 }
 
-.content .container .chat-msg .time {
+.content .container .left-side-object-from-list-details-subtitle .time {
     color: var(--grayColor);
     font-size: 1.2rem;
     margin-top: 1rem;

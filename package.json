@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "p-retry": "^5.1.2"
+    "p-retry": "^5.1.2",
+    "papaparse": "^5.4.1"
   }
 }

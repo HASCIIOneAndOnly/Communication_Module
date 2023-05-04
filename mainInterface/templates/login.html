@@ -21,6 +21,9 @@
             <label>Пароль</label>
         </div>
         <input type="submit" value="Войти">
+        {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+        {% endif %}
         <a href="#">Забыли пароль?</a>
         <a href="{{ url_for('register') }}">Зарегистрироваться</a>
     </form>

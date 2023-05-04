@@ -11,7 +11,7 @@ class User(db.Model, UserMixin):
     phone_number = db.Column(db.String, unique=False, nullable=True)
     password = db.Column(db.String(120), nullable=False)
     # modded
-    last_seen = db.Column(db.Integer, primary_key=False)
+    last_seen = db.Column(db.Integer, primary_key=False, default=0)
     profile_image = db.Column(db.String(120), nullable=True)
     # modded
     user_chats = db.relationship('UserChat', back_populates='user')
@@ -22,6 +22,29 @@ class User(db.Model, UserMixin):
     @property
     def is_active(self):
         return True
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'phone_number': self.phone_number,
+            'last_seen': self.last_seen,
+            'profile_image': self.profile_image,
+            'user_chats': [chat.to_dict() for chat in self.user_chats],
+            'is_active': self.is_active,
+        }
+
+
+# class Contact(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     contact_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     user = db.relationship('User', foreign_keys=[user_id], back_populates='contacts')
+#     contact = db.relationship('User', foreign_keys=[contact_id])
+#
+#     def __repr__(self):
+#         return f'<Contact {self.id}>'
 
 
 class Chat(db.Model):

@@ -1,8 +1,9 @@
 let header = document.querySelector('.header'), inputSearch = document.querySelector('.search-box input'),
     faArrowLeft = document.querySelector('.fa-arrow-left'), files = document.querySelector('#files'),
-    rightSideContainer = document.getElementById('right-side-container'), msg = document.querySelector('#Msg'),
+    rightSideContainer = document.getElementById('right-side-container'),
+    msg = document.querySelector('#left-side-object-from-list'),
     body = document.getElementById('body'), leftSide = document.getElementById('left-side'),
-    chatList = document.getElementById('chat-list'), // Script for the add-button for adding new chats
+    chatList = document.getElementById('left-side-object-list'), // Script for the add-button for adding new chats
     chatBoxUserInfo = document.getElementById('chatBoxUserInfo');
 
 
@@ -38,7 +39,9 @@ async function fetchChats() {
         try {
             numberOfAttemptsToFail--;
             response = await fetch('/chats');
+
             chatData = await response.json();
+
             success = true;
         } catch (err) {
             console.error('Error fetching chats. Retrying in 0.5 seconds...', err);
@@ -49,17 +52,17 @@ async function fetchChats() {
     // create chat box for each chat item
     chatData.forEach(chatItem => {
         const chatBoxNew = document.createElement('div');
-        chatBoxNew.classList.add('chat-box');
+        chatBoxNew.classList.add('left-side-object-from-list');
         chatBoxNew.innerHTML = `
-                    <div class="chat-img">
+                    <div class="left-side-object-from-list-img">
                         <img src="${chatItem.profile_image}" alt="">
                     </div>
-                    <div class="chat-details">
-                        <div class="chat-title">
+                    <div class="left-side-object-from-list-details">
+                        <div class="left-side-object-from-list-details-title">
                             <h3>${chatItem.name}</h3>
                             <span>${chatItem.time}</span>
                         </div>
-                        <div class="chat-msg">
+                        <div class="left-side-object-from-list-details-subtitle">
                             <p>${chatItem.messages[0]}</p>
                             <span>${chatItem.unreadCount}</span>
                         </div>
@@ -117,7 +120,7 @@ function loadNecessaryDataForChosenChat(chatItem) {
 
     for (let i = 0; i < chatItem.messages.length; i++) {
         const chatMsg = document.createElement('div');
-        chatMsg.className = 'chat-msg';
+        chatMsg.className = 'left-side-object-from-list-details-subtitle';
         const message = document.createElement('p');
         message.innerText = chatItem.messages[i];
         const time = document.createElement('span');
@@ -135,7 +138,4 @@ function loadNecessaryDataForChosenChat(chatItem) {
 
     chatBoxUserInfo.appendChild(messageBox);
 }
-
-// import pRetry, {AbortError} from 'p-retry';
-// import fetch from 'node-fetch';
 

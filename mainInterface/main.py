@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit
+import json
 
 import os
 from uuid import uuid4
@@ -18,19 +19,17 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-@app.route('/user_list')
+@app.route('/getUsers')
 @login_required
-def user_list():
-    # users = User.query.all()
-    # user_chats = UserChat.query.filter_by(user_id=current_user.id).all()
-    # chat_usernames = {}
-    # for user_chat in user_chats:
-    #     recipient_id = UserChat.query.filter(UserChat.chat_id == user_chat.chat_id,
-    #                                          UserChat.user_id != current_user.id).first().user_id
-    #     recipient = User.query.get(recipient_id)
-    #     chat_usernames[user_chat.chat_id] = recipient.username
-    #
-    # return render_template('user_list.html', users=users, chat_usernames=chat_usernames)
+def getUsers():
+    users = User.query.filter(User.id != current_user.id).all()
+    serialized_users = [user.serialize() for user in users]
+    return jsonify(serialized_users)
+
+
+@app.route('/mainPage')
+@login_required
+def mainPage():
     return render_template('mainPage.html')
 
 
@@ -119,10 +118,10 @@ def login():
 
         if user and user.password == password:
             login_user(user)
-            return redirect(url_for('user_list'))
+            return redirect(url_for('mainPage'))
         else:
-            flash("Неправильное имя пользователя или пароль")
-
+            error_message = 'Пользователя с таким email и паролем не существует'
+            return render_template('login.html', error_message=error_message)
     return render_template('login.html')
 
 

@@ -239,12 +239,12 @@ main {
     padding: 0 .5rem;
 }
 
-.left-side .body-container .chat-list {
+.left-side .body-container .left-side-object-list {
     display: flex;
     flex-direction: column;
 }
 
-.left-side .body-container .chat-list .chat-box {
+.left-side .body-container .left-side-object-list .left-side-object-from-list {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -253,9 +253,10 @@ main {
     padding: 0 1rem;
     cursor: pointer;
     transition: all .3s ease;
+    min-width: 390px;
 }
 
-.left-side .chat-list .chat-box .chat-img {
+.left-side .left-side-object-list .left-side-object-from-list .left-side-object-from-list-img {
     width: 5.4rem;
     height: 5.4rem;
     flex-basis: 15%;
@@ -264,51 +265,51 @@ main {
     justify-content: center;
 }
 
-.left-side .chat-list .chat-box .chat-img img {
+.left-side .left-side-object-list .left-side-object-from-list .left-side-object-from-list-img img {
     max-width: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.left-side .chat-list .chat-box .chat-details {
+.left-side .left-side-object-list .left-side-object-from-list .left-side-object-from-list-details {
     flex-basis: 85%;
 }
 
-.left-side .chat-list .chat-box .chat-details {
+.left-side .left-side-object-list .left-side-object-from-list .left-side-object-from-list-details {
     display: flex;
     flex-direction: column;
     gap: .5rem;
 }
 
-.left-side .chat-box .chat-details .chat-title {
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.left-side .chat-box .chat-details .chat-title h3 {
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-title h3 {
     text-transform: capitalize;
     font-weight: 500;
     font-size: 1.6rem;
 }
 
-.left-side .chat-box .chat-details .chat-title span {
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-title span {
     color: var(--grayColor);
     font-size: 1.2rem;
 }
 
-.left-side .chat-box .chat-details .chat-msg {
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-subtitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.left-side .chat-box .chat-details .chat-msg p {
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-subtitle p {
     font-size: 1.6rem;
     color: var(--grayColor);
 }
 
-.left-side .chat-box .chat-details .chat-msg span {
+.left-side .left-side-object-from-list .left-side-object-from-list-details .left-side-object-from-list-details-subtitle span {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
@@ -322,7 +323,7 @@ main {
     margin-left: -1rem;
 }
 
-.left-side .body-container .chat-list .chat-box:hover {
+.left-side .body-container .left-side-object-list .left-side-object-from-list:hover {
     background-color: hsla(207, 4%, 46%, .08);
     border-radius: 1rem;
 }

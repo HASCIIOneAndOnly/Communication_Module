@@ -1,25 +1,31 @@
-// Значок-кнопка в левом верхнем углу, слева от поиска, отвечающая за выпадение меню
-toggleReallocationButton = document.getElementById('toggle-reallocation-button');
-
-// Выпадающее при нажатии на значок в левом верхнем углу, слева от поиска, меню
-dropDownReallocationBlock = document.getElementById('drop-down-reallocation-block');
-
+let
 // Кнопка "Настройки" в выпадающем меню из левого верхнего угла
-settingsButton = document.getElementById('settings-button-settings');
+    settingsButton = document.getElementById('settings-button-settings'),
 
 // Кнопка "Чаты" в выпадающем меню из левого верхнего угла
-chatsReallocationButton = document.getElementById('settings-button-chats')
+    chatsReallocationButton = document.getElementById('settings-button-chats'),
+
+// Кнопка "Контакты" в выпадающем меню из левого верхнего угла
+    contactsReallocationButton = document.getElementById('settings-button-contacts');
 
 settingsButton.addEventListener('click', function () {
     chatBoxUserInfo.innerHTML = "";
     visualizeSettings();
-    addChatBtn.style.display = "none";
+    addChatButton.style.display = "none";
 });
 
 chatsReallocationButton.addEventListener('click', function () {
     chatBoxUserInfo.innerHTML = "";
     fetchChats().then(function () {
-        console.log("bad chat fetching in chatsReallocationButton")
+        console.log("chat fetching in chatsReallocationButton success")
     });
-    addChatBtn.style.display = "flex";
+    addChatButton.style.display = "flex";
+})
+
+contactsReallocationButton.addEventListener('click', function () {
+    chatBoxUserInfo.innerHTML = "";
+    fetchContacts().then(function () {
+        console.log("contacts fetching in chatsReallocationButton success")
+    });
+    addChatButton.style.display = "flex";
 })
