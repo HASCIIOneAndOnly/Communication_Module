@@ -31,7 +31,7 @@ class User(db.Model, UserMixin):
             'phone_number': self.phone_number,
             'last_seen': self.last_seen,
             'profile_image': self.profile_image,
-            'user_chats': [chat.to_dict() for chat in self.user_chats],
+            'user_chats': [chat.serialize() for chat in self.user_chats],
             'is_active': self.is_active,
         }
 
