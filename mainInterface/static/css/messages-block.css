@@ -1,0 +1,31 @@
+#messages-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* add height: 100% to make #messages-box take up full height */
+}
+
+
+#messages-container .sent-message .message-content {
+    background-color: #c2e8f5;
+    margin-left: auto;
+}
+
+#messages-container .received-message .message-content {
+    background-color: #e2e2e2;
+    margin-right: auto;
+}
+
+#starting-chat-message {
+    position: absolute;
+    background-color: plum;
+
+    margin: auto;
+    font-size: 20px;
+    width: fit-content;
+    height: fit-content;
+    display: flex; /* add display: flex */
+    flex-direction: column; /* make child elements stack vertically */
+    justify-content: center; /* center child elements vertically */
+    align-items: center; /* center child elements horizontally */
+}

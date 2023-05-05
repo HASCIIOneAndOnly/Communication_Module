@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit
+
 import json
 
 import os
@@ -48,6 +49,32 @@ def createChatsForNewUser(new_user):
         db.session.add(user2_chat)
 
     db.session.commit()
+
+
+@app.route('/send-message', methods=['POST'])
+def send_message():
+    chat_id = request.json['chat_id']
+    message = request.json['message']
+    # Find the chat object in the database
+    chat = Chat.query.get(chat_id)
+
+    # Create a new message object and add it to the chat object's messages field
+    new_message = Message(sender=current_user, chat=chat, message=message, timestamp=datetime.utcnow())
+    db.session.add(new_message)
+    db.session.commit()
+
+    return jsonify({'success': True})
+
+
+@app.route('/get_last_100_messages', methods=['POST'])
+def get_last_100_messages():
+    chat_id = request.json.get('chat_id')
+    user_id = request.json.get('user_id')
+    user_chat = UserChat.query.filter_by(chat_id=chat_id, user_id=user_id).first()
+    chat = user_chat.chat
+    last_100_messages = Message.query.filter_by(chat_id=chat.id).limit(100).all()
+    messages = [message.serialize() for message in last_100_messages]
+    return jsonify(messages)
 
 
 @app.route('/chats')

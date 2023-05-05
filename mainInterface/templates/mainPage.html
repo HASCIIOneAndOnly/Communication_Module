@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="../static/css/Settings.css">
     <link rel="stylesheet" type="text/css" href="../static/css/chat-creation-block.css">
     <link rel="stylesheet" type="text/css" href="../static/css/Contacts.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/messages-block.css">
     <link rel="shortcut icon" href="../static/img/orenComLogo.png"/>
     <title>ОренКом</title>
 </head>
@@ -104,6 +105,9 @@
             <div class="chat-box-user-info" id="chatBoxUserInfo">
 
             </div>
+            <div class="messages-box" id="messages-container">
+
+            </div>
             <div class="bottom-panel" id="right-side-bottom-panel">
                 <button class="paper-clip-button"><i class="fas fa-paperclip"></i></button>
                 <div id="popup-fast-responses-block">
@@ -120,7 +124,7 @@
                     <textarea class="message-input" id="message-input-box" placeholder="Type your message"></textarea>
                     <button class="clear-message-box-button" id="clear-message-box-button">x</button>
                 </label>
-                <button class="send-button">Send</button>
+                <button class="send-button" id="send-message-button">Send</button>
             </div>
         </div>
     </section>

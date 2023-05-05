@@ -15,7 +15,7 @@
     height: 100%;
     background: url(../img/pattern.svg);
     background-size: contain;
-    opacity: .5;
+    opacity: 0.2;
 }
 
 .right-side .container {
@@ -271,4 +271,22 @@
 
 #popup-container li:hover {
     background-color: #3e8e41;
+}
+
+#chatBoxUserInfo #left-side-object-from-list-initials-circle {
+    width: 5.4rem;
+    height: 5.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background-color: #555;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#chatBoxUserInfo #left-side-object-from-list-initials-circle span {
+    text-align: center;
 }

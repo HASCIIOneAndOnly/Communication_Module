@@ -1,10 +1,15 @@
-let header = document.querySelector('.header'), inputSearch = document.querySelector('.search-box input'),
-    faArrowLeft = document.querySelector('.fa-arrow-left'), files = document.querySelector('#files'),
+let header = document.querySelector('.header'),
+    inputSearch = document.querySelector('.search-box input'),
+    faArrowLeft = document.querySelector('.fa-arrow-left'),
+    files = document.querySelector('#files'),
     rightSideContainer = document.getElementById('right-side-container'),
     msg = document.querySelector('#left-side-object-from-list'),
-    body = document.getElementById('body'), leftSide = document.getElementById('left-side'),
+    body = document.getElementById('body'),
+    leftSide = document.getElementById('left-side'),
     chatList = document.getElementById('left-side-object-list'), // Script for the add-button for adding new chats
-    chatBoxUserInfo = document.getElementById('chatBoxUserInfo');
+    chatBoxUserInfo = document.getElementById('chatBoxUserInfo'),
+    bottomPanel = document.getElementById('right-side-bottom-panel'),
+    messagesBox = document.getElementById('messages-container');
 
 
 inputSearch.addEventListener('focus', () => {
@@ -81,7 +86,7 @@ async function fetchChats() {
 function createCircleForLeftSideListObject(itemToCreate, item) {
     if (item.chat_image === null) {
         itemToCreate.innerHTML = `
-                <div class="left-side-object-from-list-initials-circle">
+                <div class="left-side-object-from-list-initials-circle" id="left-side-object-from-list-initials-circle">
                     <span class="initials">${createAbbreviation(item)}</span>
                 </div>
                 `;
@@ -115,7 +120,8 @@ function loadNecessaryDataForChosenChat(chatItem) {
 
     const circleImageOrAbbreviationBlock = document.createElement('div');
     if (chatItem.chat_image === null) {
-        circleImageOrAbbreviationBlock.className = 'left-side-object-from-list-img';
+        circleImageOrAbbreviationBlock.className = 'left-side-object-from-list-initials-circle';
+        circleImageOrAbbreviationBlock.id = "left-side-object-from-list-initials-circle";
         const circleImageOrAbbreviation = document.createElement('span');
         circleImageOrAbbreviation.className = 'initials';
         circleImageOrAbbreviation.innerHTML = `${createAbbreviation(chatItem)}`
@@ -152,27 +158,54 @@ function loadNecessaryDataForChosenChat(chatItem) {
 
     chatBoxUserInfo.appendChild(contentHeader);
 
-    const chatContainer = document.createElement('div');
-    chatContainer.className = 'chat-container';
+    let messages = loadMessages(chatItem);
+    // messagesBox
 
-    // for (let i = 0; i < chatItem.chat.messages.count(); i++) {
-    //     const chatMsg = document.createElement('div');
-    //     chatMsg.className = 'left-side-object-from-list-details-subtitle';
-    //     const message = document.createElement('p');
-    //     message.innerText = chatItem.chat.messages[i];
-    //     // const time = document.createElement('span');
-    //     // time.className = 'time';
-    //     // time.innerText = chatItem.time;
-    //     // chatMsg.appendChild(time);
-    //     chatMsg.appendChild(message);
-    //     chatContainer.appendChild(chatMsg);
-    // }
+    if (messages.length > 0) {
+        messages.forEach(message => {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container');
+            const messageContent = document.createElement('div');
+            messageContent.classList.add('message-content');
+            messageContent.textContent = message.message;
+            const senderInfo = document.createElement('div');
+            senderInfo.classList.add('sender-info');
+            senderInfo.textContent = message.sender.username;
+            messageContainer.appendChild(messageContent);
+            messageContainer.appendChild(senderInfo);
+            if (message.sender.id === chatItem.user_id) {
+                messageContainer.classList.add('sent-message');
+            } else {
+                messageContainer.classList.add('received-message');
+            }
+            messagesBox.appendChild(messageContainer);
+        })
+    } else {
+        const startingChatMessage = document.createElement('div');
+        startingChatMessage.id = "starting-chat-message";
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('message-content');
+        messageContent.textContent = chatItem.last_message;
+        startingChatMessage.appendChild(messageContent);
+        messagesBox.appendChild(startingChatMessage);
+    }
 
-    chatBoxUserInfo.appendChild(chatContainer);
+    // chatBoxUserInfo.appendChild(chatContainer);
 
-    const messageBox = document.createElement('div');
-    messageBox.className = 'message-box';
+    // const messageBox = document.createElement('div');
+    // messageBox.className = 'message-box';
 
-    chatBoxUserInfo.appendChild(messageBox);
+    // chatBoxUserInfo.appendChild(messageBox);
 }
 
+function loadMessages(chatItem) {
+    return fetch('/get_last_100_messages', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({chat_id: chatItem.chat_id, user_id: chatItem.user_id})
+    }).then(response => response.json())
+        .then(messages => {
+            return messages;
+        })
+        .catch(error => console.error(error));
+}

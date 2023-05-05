@@ -99,6 +99,4 @@ class Message(db.Model):
             'chat_id': self.chat_id,
             'message': self.message,
             'timestamp': self.timestamp,
-            'sender': self.sender.serialize(),
-            'recipient': self.recipient.serialize(),
         }
