@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120), nullable=False)
     # modded
     last_seen = db.Column(db.Integer, primary_key=False, default=0)
-    profile_image = db.Column(db.String(120), nullable=True)
+    profile_image = db.Column(db.LargeBinary, nullable=True)
     # modded
     user_chats = db.relationship('UserChat', back_populates='user')
 
@@ -40,11 +40,7 @@ class Chat(db.Model):
     id = db.Column(db.String(36), primary_key=True)
     messages = db.relationship('Message', backref='chat', lazy=True)
     user_chats = db.relationship('UserChat', back_populates='chat')
-    # modded
     unread_count = db.Column(db.Integer, primary_key=False)
-
-    # modded
-    # chat_image = db.Column(db.String(120), nullable=True)
 
     def serialize(self):
         return {
@@ -61,15 +57,27 @@ class UserChat(db.Model):
     chat = db.relationship("Chat", back_populates="user_chats")
     unread_messages_counter = db.Column(db.Integer, default=0)
 
+    chat_image = db.Column(db.LargeBinary, nullable=True)
+
+    last_message = db.Column(db.String)
+
     def serialize(self):
         return {
             'user_id': self.user_id,
             'chat_id': self.chat_id,
             'chat_name': self.chat_name,
 
-            'chat': self.chat.serialize(),
+            # 'chat': self.chat.serialize(),
             'unread_messages_counter': self.unread_messages_counter,
+            'chat_image': self.chat_image,
+            'last_message': self.last_message,
         }
+
+    def getName(self):
+        return {self.chat_name}
+
+    def getImage(self):
+        return {self.chat_image}
 
 
 class Message(db.Model):

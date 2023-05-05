@@ -29,8 +29,8 @@ async function fetchChats() {
     let response;
     let chatData;
     let success = false;
-    let numberOfAttemptsToFail = 10;
-    await new Promise(resolve => setTimeout(resolve, 500));
+    let numberOfAttemptsToFail = 5;
+    await new Promise(resolve => setTimeout(resolve, 1000));
     while (!success) {
         if (numberOfAttemptsToFail === 0) {
             console.log("Failed while fetching chats");
@@ -54,17 +54,15 @@ async function fetchChats() {
         const chatBoxNew = document.createElement('div');
         chatBoxNew.classList.add('left-side-object-from-list');
 
-        // <div className="left-side-object-from-list-img">
-        //     <img src="${chatItem.profile_image}" alt="">
-        // </div>
-        // <span>${chatItem.user.last_seen}</span>
-        chatBoxNew.innerHTML = `
+        createCircleForLeftSideListObject(chatBoxNew, chatItem);
+
+        chatBoxNew.innerHTML += `
                     <div class="left-side-object-from-list-details">
                         <div class="left-side-object-from-list-details-title">
                             <h3>${chatItem.chat_name}</h3>
                         </div>
                         <div class="left-side-object-from-list-details-subtitle">
-                            <p>${chatItem.chat.messages}</p>
+                            <p>${chatItem.last_message}</p>
                             <span>${chatItem.unread_messages_counter}</span>
                         </div>
                     </div>
@@ -80,28 +78,66 @@ async function fetchChats() {
     });
 }
 
+function createCircleForLeftSideListObject(itemToCreate, item) {
+    if (item.chat_image === null) {
+        itemToCreate.innerHTML = `
+                <div class="left-side-object-from-list-initials-circle">
+                    <span class="initials">${createAbbreviation(item)}</span>
+                </div>
+                `;
+    } else {
+        // Assuming `largeBinaryData` is a variable containing your binary data
+        const base64Data = btoa(String.fromCharCode(...new Uint8Array(item.chat_image)));
+
+// Build the HTML image tag
+        const img = document.createElement('img');
+        img.src = `data:image/png;base64,${base64Data}`;
+        img.alt = 'LargeBinary Image';
+
+// Append the image to an HTML element
+        itemToCreate.appendChild(img);
+    }
+}
+
+function createAbbreviation(item) {
+    let chat_name_abbr = '';
+    let splitUserName = item.chat_name.split(' ');
+    for (let i = 0; i < splitUserName.length; i++) {
+        chat_name_abbr += splitUserName[i][0].toUpperCase();
+    }
+    return chat_name_abbr;
+}
 
 function loadNecessaryDataForChosenChat(chatItem) {
 
     const contentHeader = document.createElement('div');
     contentHeader.className = 'content-header';
 
-    const image = document.createElement('div');
-    image.className = 'image';
-    const profileImg = document.createElement('img');
-    profileImg.src = chatItem.profile_image;
-    profileImg.alt = '';
-    image.appendChild(profileImg);
-    contentHeader.appendChild(image);
+    const circleImageOrAbbreviationBlock = document.createElement('div');
+    if (chatItem.chat_image === null) {
+        circleImageOrAbbreviationBlock.className = 'left-side-object-from-list-img';
+        const circleImageOrAbbreviation = document.createElement('span');
+        circleImageOrAbbreviation.className = 'initials';
+        circleImageOrAbbreviation.innerHTML = `${createAbbreviation(chatItem)}`
+        circleImageOrAbbreviationBlock.appendChild(circleImageOrAbbreviation);
+    } else {
+        circleImageOrAbbreviationBlock.className = 'left-side-object-from-list-img';
+        const circleImageOrAbbreviation = document.createElement('img');
+        const base64Data = btoa(String.fromCharCode(...new Uint8Array(chatItem.chat_image)));
+        circleImageOrAbbreviation.src = `data:image/png;base64,${base64Data}`;
+        circleImageOrAbbreviation.alt = 'LargeBinary Image';
+        circleImageOrAbbreviationBlock.appendChild(circleImageOrAbbreviation);
+    }
+    contentHeader.appendChild(circleImageOrAbbreviationBlock);
 
     const details = document.createElement('div');
     details.className = 'details';
     const name = document.createElement('h3');
-    name.innerText = chatItem.name;
-    const lastSeen = document.createElement('span');
-    lastSeen.innerText = 'last seen ' + chatItem.last_seen;
+    name.innerText = chatItem.chat_name;
+    // const lastSeen = document.createElement('span');
+    // lastSeen.innerText = 'last seen ' + chatItem.last_seen;
+    // details.appendChild(lastSeen);
     details.appendChild(name);
-    details.appendChild(lastSeen);
     contentHeader.appendChild(details);
 
     const icons = document.createElement('div');
@@ -119,18 +155,18 @@ function loadNecessaryDataForChosenChat(chatItem) {
     const chatContainer = document.createElement('div');
     chatContainer.className = 'chat-container';
 
-    for (let i = 0; i < chatItem.messages.length; i++) {
-        const chatMsg = document.createElement('div');
-        chatMsg.className = 'left-side-object-from-list-details-subtitle';
-        const message = document.createElement('p');
-        message.innerText = chatItem.messages[i];
-        const time = document.createElement('span');
-        time.className = 'time';
-        time.innerText = chatItem.time;
-        chatMsg.appendChild(message);
-        chatMsg.appendChild(time);
-        chatContainer.appendChild(chatMsg);
-    }
+    // for (let i = 0; i < chatItem.chat.messages.count(); i++) {
+    //     const chatMsg = document.createElement('div');
+    //     chatMsg.className = 'left-side-object-from-list-details-subtitle';
+    //     const message = document.createElement('p');
+    //     message.innerText = chatItem.chat.messages[i];
+    //     // const time = document.createElement('span');
+    //     // time.className = 'time';
+    //     // time.innerText = chatItem.time;
+    //     // chatMsg.appendChild(time);
+    //     chatMsg.appendChild(message);
+    //     chatContainer.appendChild(chatMsg);
+    // }
 
     chatBoxUserInfo.appendChild(chatContainer);
 
