@@ -38,9 +38,10 @@ class User(db.Model, UserMixin):
 
 class Chat(db.Model):
     id = db.Column(db.String(36), primary_key=True)
+    unread_count = db.Column(db.Integer, primary_key=False)
+
     messages = db.relationship('Message', backref='chat', lazy=True)
     user_chats = db.relationship('UserChat', back_populates='chat')
-    unread_count = db.Column(db.Integer, primary_key=False)
 
     def serialize(self):
         return {
@@ -54,9 +55,9 @@ class UserChat(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     chat_id = db.Column(db.String(36), db.ForeignKey('chat.id'), primary_key=True)
     user = db.relationship("User", back_populates="user_chats")
-    chat = db.relationship("Chat", back_populates="user_chats")
     unread_messages_counter = db.Column(db.Integer, default=0)
 
+    chat = db.relationship('Chat', back_populates='user_chats')
     chat_image = db.Column(db.LargeBinary, nullable=True)
 
     last_message = db.Column(db.String)
@@ -80,16 +81,23 @@ class UserChat(db.Model):
         return {self.chat_image}
 
 
+message_recipients = db.Table('message_recipients',
+                              db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                              db.Column('message_id', db.Integer, db.ForeignKey('message.id'), primary_key=True)
+                              )
+
+
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     chat_id = db.Column(db.String(36), db.ForeignKey('chat.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
 
     sender = db.relationship('User', foreign_keys=[sender_id], backref=db.backref('sent_messages', lazy=True))
-    recipient = db.relationship('User', foreign_keys=[recipient_id], backref=db.backref('received_messages', lazy=True))
+    recipients = db.relationship('User', secondary=message_recipients,
+                                 backref=db.backref('received_messages', lazy=True))
 
     def serialize(self):
         return {

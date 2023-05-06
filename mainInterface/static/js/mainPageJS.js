@@ -76,6 +76,7 @@ async function fetchChats() {
             chatBoxUserInfo.innerHTML = '';
             bottomPanel.style.display = "inherit";
             loadNecessaryDataForChosenChat(chatItem);
+            localStorage.setItem('current_chat_id', chatItem.chat_id);
             rightSideContainer.classList.add('active');
             fetchFastResponses();
         })
@@ -189,13 +190,6 @@ function loadNecessaryDataForChosenChat(chatItem) {
         startingChatMessage.appendChild(messageContent);
         messagesBox.appendChild(startingChatMessage);
     }
-
-    // chatBoxUserInfo.appendChild(chatContainer);
-
-    // const messageBox = document.createElement('div');
-    // messageBox.className = 'message-box';
-
-    // chatBoxUserInfo.appendChild(messageBox);
 }
 
 function loadMessages(chatItem) {

@@ -1,7 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit
-
+from datetime import datetime
 import json
 
 import os
@@ -38,31 +38,70 @@ def createChatsForNewUser(new_user):
     existing_users = User.query.filter(User.id != new_user.id).all()
     for user in existing_users:
         chat_id = generate_unique_chat_id()
-        chat = Chat(id=chat_id)
+        chat = Chat(id=chat_id, unread_count=0)
         user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id,
                               chat_name=user.username, last_message="Этот чат пока пуст")
         user2_chat = UserChat(user_id=user.id, chat_id=chat_id,
                               chat_name=new_user.username, last_message="Этот чат пока пуст")
-
         db.session.add(chat)
         db.session.add(user1_chat)
         db.session.add(user2_chat)
-
     db.session.commit()
+
+
+# def createChatsForNewUser(new_user):
+#     existing_users = User.query.filter(User.id != new_user.id).all()
+#     print("\n\n")
+#     print(existing_users)
+#     print("\n\n")
+#     for user in existing_users:
+#         chat_id = generate_unique_chat_id()
+#         chat = Chat(id=chat_id, unread_count=0)
+#         user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id,
+#                               chat_name=user.username, last_message="Этот чат пока пуст")
+#         # print(new_user.id)
+#         user2_chat = UserChat(user_id=user.id, chat_id=chat_id,
+#                               chat_name=new_user.username, last_message="Этот чат пока пуст")
+#         # print(user.id)
+#         user1 = User.query.filter_by(id=new_user.id).first()  # replace with your own query
+#         user2 = User.query.filter_by(id=user.id).first()  # replace with your own query
+#         chat.users.append(user1)
+#         chat.users.append(user2)
+#         db.session.add(chat)
+#         db.session.add(user1_chat)
+#         db.session.add(user2_chat)
+#
+#     db.session.commit()
 
 
 @app.route('/send-message', methods=['POST'])
-def send_message():
-    chat_id = request.json['chat_id']
-    message = request.json['message']
-    # Find the chat object in the database
-    chat = Chat.query.get(chat_id)
+def create_message():
+    # Get data from the request
+    data = request.get_json()
+    chat_id = data.get('chat_id')
+    message = data.get('message')
 
-    # Create a new message object and add it to the chat object's messages field
-    new_message = Message(sender=current_user, chat=chat, message=message, timestamp=datetime.utcnow())
+    sender_id = current_user.id
+
+    chat = Chat.query.get(chat_id)
+    recipient_ids = [user_chat.user_id for user_chat in chat.user_chats if user_chat.user_id != sender_id]
+    print(chat.user_chats)
+
+    # Create a new message object
+    timestamp = datetime.now()
+    new_message = Message(sender_id=sender_id, chat_id=chat_id,
+                          message=message, timestamp=timestamp)
+
+    # Add recipients to the message
+    for recipient_id in recipient_ids:
+        recipient = User.query.get(recipient_id)
+        new_message.recipients.append(recipient)
+
+    # Add the message to the database and commit the transaction
     db.session.add(new_message)
     db.session.commit()
 
+    # Return a response indicating success
     return jsonify({'success': True})
 
 
