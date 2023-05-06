@@ -159,37 +159,39 @@ function loadNecessaryDataForChosenChat(chatItem) {
 
     chatBoxUserInfo.appendChild(contentHeader);
 
-    let messages = loadMessages(chatItem);
-    // messagesBox
+    loadMessages(chatItem).then(messages => {
 
-    if (messages.length > 0) {
-        messages.forEach(message => {
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add('message-container');
+        if (messages.length > 0) {
+            messagesBox.innerHTML = "";
+            messages.forEach(message => {
+                    console.log(message);
+                    const messageContainer = document.createElement('div');
+                    messageContainer.classList.add('message-container');
+                    const messageContent = document.createElement('div');
+                    messageContent.classList.add('message-content');
+                    messageContent.textContent = message.message;
+                    const senderInfo = document.createElement('div');
+                    messageContainer.appendChild(messageContent);
+                    messageContainer.appendChild(senderInfo);
+                    if (message.sender_id === chatItem.user_id) {
+                        messageContainer.classList.add('sent-message');
+                    } else {
+                        messageContainer.classList.add('received-message');
+                    }
+                    messagesBox.appendChild(messageContainer);
+                }
+            )
+        } else {
+            const startingChatMessage = document.createElement('div');
+            startingChatMessage.id = "starting-chat-message";
             const messageContent = document.createElement('div');
             messageContent.classList.add('message-content');
-            messageContent.textContent = message.message;
-            const senderInfo = document.createElement('div');
-            senderInfo.classList.add('sender-info');
-            senderInfo.textContent = message.sender.username;
-            messageContainer.appendChild(messageContent);
-            messageContainer.appendChild(senderInfo);
-            if (message.sender.id === chatItem.user_id) {
-                messageContainer.classList.add('sent-message');
-            } else {
-                messageContainer.classList.add('received-message');
-            }
-            messagesBox.appendChild(messageContainer);
-        })
-    } else {
-        const startingChatMessage = document.createElement('div');
-        startingChatMessage.id = "starting-chat-message";
-        const messageContent = document.createElement('div');
-        messageContent.classList.add('message-content');
-        messageContent.textContent = chatItem.last_message;
-        startingChatMessage.appendChild(messageContent);
-        messagesBox.appendChild(startingChatMessage);
-    }
+            messageContent.textContent = chatItem.last_message;
+            startingChatMessage.appendChild(messageContent);
+            messagesBox.appendChild(startingChatMessage);
+        }
+
+    })
 }
 
 function loadMessages(chatItem) {

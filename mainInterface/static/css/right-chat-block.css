@@ -16,6 +16,7 @@
     background: url(../img/pattern.svg);
     background-size: contain;
     opacity: 0.2;
+    z-index: -1;
 }
 
 .right-side .container {

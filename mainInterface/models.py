@@ -95,7 +95,8 @@ class Message(db.Model):
     message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
 
-    sender = db.relationship('User', foreign_keys=[sender_id], backref=db.backref('sent_messages', lazy=True))
+    sender = db.relationship('User', foreign_keys=[sender_id], backref=db.backref('sent_messages', lazy=True),
+                             lazy='joined')
     recipients = db.relationship('User', secondary=message_recipients,
                                  backref=db.backref('received_messages', lazy=True))
 
@@ -103,7 +104,6 @@ class Message(db.Model):
         return {
             'id': self.id,
             'sender_id': self.sender_id,
-            'recipient_id': self.recipient_id,
             'chat_id': self.chat_id,
             'message': self.message,
             'timestamp': self.timestamp,

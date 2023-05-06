@@ -1,19 +1,41 @@
 #messages-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%; /* add height: 100% to make #messages-box take up full height */
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 10px;
 }
 
+#messages-container .sent-message {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+#messages-container .received-message {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    z-index: 1;
+}
 
 #messages-container .sent-message .message-content {
-    background-color: #c2e8f5;
-    margin-left: auto;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #messages-container .received-message .message-content {
-    background-color: #e2e2e2;
-    margin-right: auto;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #starting-chat-message {
@@ -28,4 +50,8 @@
     flex-direction: column; /* make child elements stack vertically */
     justify-content: center; /* center child elements vertically */
     align-items: center; /* center child elements horizontally */
+}
+
+.received-message {
+    justify-content: flex-start; /* align received messages to the left */
 }
