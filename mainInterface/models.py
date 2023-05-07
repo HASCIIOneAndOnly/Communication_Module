@@ -1,17 +1,18 @@
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     phone_number = db.Column(db.String, unique=False, nullable=True)
     password = db.Column(db.String(120), nullable=False)
     # modded
-    last_seen = db.Column(db.Integer, primary_key=False, default=0)
+    last_seen = db.Column(db.DateTime, primary_key=False, default=0)
     profile_image = db.Column(db.LargeBinary, nullable=True)
     # modded
     user_chats = db.relationship('UserChat', back_populates='user')
@@ -37,6 +38,7 @@ class User(db.Model, UserMixin):
 
 
 class Chat(db.Model):
+    __tablename__ = 'chat'
     id = db.Column(db.String(36), primary_key=True)
     unread_count = db.Column(db.Integer, primary_key=False)
 
@@ -51,16 +53,16 @@ class Chat(db.Model):
 
 
 class UserChat(db.Model):
+    __tablename__ = 'user_chat'
     chat_name = db.Column(db.String(120), default='Новый чат')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     chat_id = db.Column(db.String(36), db.ForeignKey('chat.id'), primary_key=True)
-    user = db.relationship("User", back_populates="user_chats")
     unread_messages_counter = db.Column(db.Integer, default=0)
-
-    chat = db.relationship('Chat', back_populates='user_chats')
+    last_message = db.Column(db.String)
     chat_image = db.Column(db.LargeBinary, nullable=True)
 
-    last_message = db.Column(db.String)
+    user = db.relationship("User", back_populates="user_chats")
+    chat = db.relationship('Chat', back_populates='user_chats')
 
     def serialize(self):
         return {
@@ -68,7 +70,7 @@ class UserChat(db.Model):
             'chat_id': self.chat_id,
             'chat_name': self.chat_name,
 
-            # 'chat': self.chat.serialize(),
+            'user_last_seen': self.user.last_seen,
             'unread_messages_counter': self.unread_messages_counter,
             'chat_image': self.chat_image,
             'last_message': self.last_message,
@@ -88,9 +90,9 @@ message_recipients = db.Table('message_recipients',
 
 
 class Message(db.Model):
+    __tablename__ = 'message'
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     chat_id = db.Column(db.String(36), db.ForeignKey('chat.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)

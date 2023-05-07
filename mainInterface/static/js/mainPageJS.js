@@ -115,6 +115,7 @@ function createAbbreviation(item) {
 }
 
 function loadNecessaryDataForChosenChat(chatItem) {
+    messagesBox.innerHTML = "";
 
     const contentHeader = document.createElement('div');
     contentHeader.className = 'content-header';
@@ -141,9 +142,13 @@ function loadNecessaryDataForChosenChat(chatItem) {
     details.className = 'details';
     const name = document.createElement('h3');
     name.innerText = chatItem.chat_name;
-    // const lastSeen = document.createElement('span');
-    // lastSeen.innerText = 'last seen ' + chatItem.last_seen;
-    // details.appendChild(lastSeen);
+
+
+    const lastSeen = document.createElement('span');
+    lastSeen.innerText = 'last seen ' + chatItem.user_last_seen;
+    details.appendChild(lastSeen);
+
+
     details.appendChild(name);
     contentHeader.appendChild(details);
 

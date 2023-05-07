@@ -1,11 +1,10 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from flask_socketio import SocketIO, emit
-from datetime import datetime
-import json
-
 import os
+from datetime import datetime
 from uuid import uuid4
+
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user, user_logged_in
+from flask_socketio import SocketIO
 
 from models import db, User, Message, Chat, UserChat
 
@@ -36,42 +35,19 @@ def mainPage():
 
 def createChatsForNewUser(new_user):
     existing_users = User.query.filter(User.id != new_user.id).all()
-    for user in existing_users:
+    for existing_user in existing_users:
         chat_id = generate_unique_chat_id()
         chat = Chat(id=chat_id, unread_count=0)
         user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id,
-                              chat_name=user.username, last_message="Этот чат пока пуст")
-        user2_chat = UserChat(user_id=user.id, chat_id=chat_id,
+                              chat_name=existing_user.username, last_message="Этот чат пока пуст")
+        # user1_chat.user = existing_user
+        user2_chat = UserChat(user_id=existing_user.id, chat_id=chat_id,
                               chat_name=new_user.username, last_message="Этот чат пока пуст")
+        # user2_chat.user = new_user
         db.session.add(chat)
         db.session.add(user1_chat)
         db.session.add(user2_chat)
     db.session.commit()
-
-
-# def createChatsForNewUser(new_user):
-#     existing_users = User.query.filter(User.id != new_user.id).all()
-#     print("\n\n")
-#     print(existing_users)
-#     print("\n\n")
-#     for user in existing_users:
-#         chat_id = generate_unique_chat_id()
-#         chat = Chat(id=chat_id, unread_count=0)
-#         user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id,
-#                               chat_name=user.username, last_message="Этот чат пока пуст")
-#         # print(new_user.id)
-#         user2_chat = UserChat(user_id=user.id, chat_id=chat_id,
-#                               chat_name=new_user.username, last_message="Этот чат пока пуст")
-#         # print(user.id)
-#         user1 = User.query.filter_by(id=new_user.id).first()  # replace with your own query
-#         user2 = User.query.filter_by(id=user.id).first()  # replace with your own query
-#         chat.users.append(user1)
-#         chat.users.append(user2)
-#         db.session.add(chat)
-#         db.session.add(user1_chat)
-#         db.session.add(user2_chat)
-#
-#     db.session.commit()
 
 
 @app.route('/send-message', methods=['POST'])
@@ -121,6 +97,12 @@ def get_chats():
     user_chats = UserChat.query.filter_by(user_id=current_user.id).all()
     serialized_chats = [chat.serialize() for chat in user_chats]
     return jsonify(serialized_chats)
+
+
+# @app.route('/last_seen')
+# def get_user_last_seen():
+#     chat_id = request.json.get('chat_id')
+#     chat = C
 
 
 @app.route('/fastResponses')
@@ -193,6 +175,13 @@ def home():
     return redirect(url_for('login'))
 
 
+# Update the user's last seen time when they log in
+@user_logged_in.connect
+def update_last_seen(sender, user, **extra):
+    user.last_seen = datetime.utcnow()
+    db.session.commit()
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -200,22 +189,6 @@ def load_user(user_id):
 
 def generate_unique_chat_id():
     return str(uuid4())
-
-
-# def create_chats_for_new_user(new_user):
-#     existing_users = User.query.filter(User.id < new_user.id).all()
-#     for user in existing_users:
-#         if user.id != new_user.id:
-#             chat_id = generate_unique_chat_id()
-#             chat = Chat(id=chat_id)
-#             user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id)
-#             user2_chat = UserChat(user_id=user.id, chat_id=chat_id)
-#
-#             db.session.add(chat)
-#             db.session.add(user1_chat)
-#             db.session.add(user2_chat)
-#
-#     db.session.commit()
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -234,7 +207,8 @@ def register():
             flash("Пользователь с таким именем уже существует")
             return redirect(url_for('register'))
 
-        new_user = User(username=username, phone_number=phone_number, email=email, password=password)
+        new_user = User(username=username, phone_number=phone_number, email=email, password=password,
+                        last_seen=datetime.now())
         db.session.add(new_user)
         db.session.commit()
 

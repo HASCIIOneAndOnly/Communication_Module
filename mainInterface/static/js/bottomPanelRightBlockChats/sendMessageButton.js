@@ -30,5 +30,5 @@ sendMessageButton.addEventListener('click', function () {
                 console.error(error);
             });
     }
-
+    messageInputArea.value = "";
 })
