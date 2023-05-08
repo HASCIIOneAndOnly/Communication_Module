@@ -4,12 +4,12 @@ from uuid import uuid4
 
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, user_logged_in
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 from models import db, User, Message, Chat, UserChat
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amepifanov:fhntv2003@localhost:5050/postgres'
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 users_sockets = {}
@@ -50,17 +50,19 @@ def createChatsForNewUser(new_user):
     db.session.commit()
 
 
-@app.route('/send-message', methods=['POST'])
-def create_message():
-    # Get data from the request
-    data = request.get_json()
+# @app.route('/send-message', methods=['POST'])
+
+@socketio.on('send_message')
+def create_message(data):
+    # Get data from the event arguments
     chat_id = data.get('chat_id')
     message = data.get('message')
 
     sender_id = current_user.id
 
     chat = Chat.query.get(chat_id)
-    recipient_ids = [user_chat.user_id for user_chat in chat.user_chats if user_chat.user_id != sender_id]
+    recipient_ids = [
+        user_chat.user_id for user_chat in chat.user_chats if user_chat.user_id != sender_id]
     print(chat.user_chats)
 
     # Create a new message object
@@ -77,8 +79,15 @@ def create_message():
     db.session.add(new_message)
     db.session.commit()
 
+    message_data = {
+        'message': message,
+    }
+    emit('new_message', message_data, broadcast=True)
+
     # Return a response indicating success
     return jsonify({'success': True})
+
+
 
 
 @app.route('/get_last_100_messages', methods=['POST'])
@@ -175,11 +184,11 @@ def home():
     return redirect(url_for('login'))
 
 
-# Update the user's last seen time when they log in
-@user_logged_in.connect
-def update_last_seen(sender, user, **extra):
-    user.last_seen = datetime.utcnow()
-    db.session.commit()
+# # Update the user's last seen time when they log in
+# @user_logged_in.connect
+# def update_last_seen(sender, user, **extra):
+#     user.last_seen = datetime.utcnow()
+#     db.session.commit()
 
 
 @login_manager.user_loader
