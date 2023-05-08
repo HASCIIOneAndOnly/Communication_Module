@@ -64,14 +64,26 @@ async function fetchContacts() {
                         </div>
                     </div>
                 `;
-        // chatBoxNew.addEventListener('click', () => {
-        //     chatBoxUserInfo.innerHTML = '';
-        //     bottomPanel.style.display = "inherit";
-        //     loadNecessaryDataForChosenChat(contact);
-        //     rightSideContainer.classList.add('active');
-        //     fetchFastResponses();
-        // })
+        contactBox.addEventListener('click', () => {
+            console.log(contact.user_chats);
+            console.log(contact.id);
+            const data = {
+                user_chats: contact.user_chats,
+            };
+            fetch('/get_personal_chat_for_contact', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data),
+            }).then(response => response.json()).then(response => {
+                console.log(response);
+                chatBoxUserInfo.innerHTML = '';
+                bottomPanel.style.display = "inherit";
+                loadNecessaryDataForChosenChat(response);
+                rightSideContainer.classList.add('active');
+                fetchFastResponses();
+            })
+        })
         chatList.appendChild(contactBox);
-    });
-}
 
+    })
+}

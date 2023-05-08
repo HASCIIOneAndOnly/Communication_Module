@@ -165,7 +165,7 @@ function loadNecessaryDataForChosenChat(chatItem) {
     chatBoxUserInfo.appendChild(contentHeader);
 
     loadMessages(chatItem).then(messages => {
-
+        messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         if (messages.length > 0) {
             messagesBox.innerHTML = "";
             messages.forEach(message => {

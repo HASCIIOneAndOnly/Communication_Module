@@ -39,7 +39,7 @@
 }
 
 #starting-chat-message {
-    position: absolute;
+    position: relative;
     background-color: plum;
 
     margin: auto;

@@ -49,6 +49,7 @@ class Chat(db.Model):
         return {
             'id': self.id,
             'messages': [message.serialize() for message in self.messages],
+            'user_chats': [chat.serialize() for chat in self.user_chats],
         }
 
 

@@ -2,18 +2,13 @@ import os
 from datetime import datetime
 from uuid import uuid4
 
-import pytz
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, user_logged_in
-from flask_socketio import SocketIO
-
 from models import db, User, Message, Chat, UserChat
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
 app.config['SECRET_KEY'] = os.urandom(24)
-socketio = SocketIO(app)
-users_sockets = {}
 
 db.init_app(app)
 login_manager = LoginManager()
@@ -41,10 +36,8 @@ def createChatsForNewUser(new_user):
         chat = Chat(id=chat_id, unread_count=0)
         user1_chat = UserChat(user_id=new_user.id, chat_id=chat_id,
                               chat_name=existing_user.username, last_message="Этот чат пока пуст")
-        # user1_chat.user = existing_user
         user2_chat = UserChat(user_id=existing_user.id, chat_id=chat_id,
                               chat_name=new_user.username, last_message="Этот чат пока пуст")
-        # user2_chat.user = new_user
         db.session.add(chat)
         db.session.add(user1_chat)
         db.session.add(user2_chat)
@@ -68,9 +61,6 @@ def create_message():
     timestamp = datetime.now()
     new_message = Message(sender_id=sender_id, chat_id=chat_id,
                           message=message, timestamp=timestamp)
-    user_chats = UserChat.query.filter_by(chat_id=chat_id).all();
-    for user_chat in user_chats:
-        user_chat.last_message = message
 
     # Add recipients to the message
     for recipient_id in recipient_ids:
@@ -103,30 +93,6 @@ def get_chats():
     return jsonify(serialized_chats)
 
 
-@app.route('/get_personal_chat_for_contact', methods=['POST'])
-def get_personal_chat_for_contact():
-    print("\n\nfine\n\n")
-    user_chats = request.json.get('user_chats')
-    for user_chat in user_chats:
-        current_chat_to_check = Chat.query.get(user_chat['chat_id']).user_chats
-        # print(current_chat_to_check)
-        # print(len(current_chat_to_check))
-        if len(current_chat_to_check) == 2:
-            for inside_user_chat in current_chat_to_check:
-                print(inside_user_chat.serialize())
-                if inside_user_chat.serialize()['user_id'] == current_user.id:
-                    print('smth')
-                    print(inside_user_chat.serialize())
-                    return inside_user_chat.serialize()
-    print("\n\nfailed\n\n")
-
-
-# @app.route('/last_seen')
-# def get_user_last_seen():
-#     chat_id = request.json.get('chat_id')
-#     chat = C
-
-
 @app.route('/fastResponses')
 def get_fast_responses():
     # Here you would retrieve the chat data from your database or other data source
@@ -149,24 +115,6 @@ def get_fast_responses():
     ]
     # Return the chat data as a JSON object
     return jsonify(fast_responses)
-
-
-@socketio.on('connect')
-def connect():
-    pass
-
-
-@socketio.on('connect')
-@login_required
-def on_connect():
-    users_sockets[current_user.id] = request.sid
-    print(f"Connected: {current_user.username}, sid: {request.sid}")
-
-
-@socketio.on('disconnect')
-@login_required
-def handle_disconnect():
-    users_sockets.pop(current_user.id, None)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -200,8 +148,7 @@ def home():
 # Update the user's last seen time when they log in
 @user_logged_in.connect
 def update_last_seen(sender, user, **extra):
-    tz_moscow = pytz.timezone('Europe/Moscow')
-    user.last_seen = datetime.now(tz_moscow)
+    user.last_seen = datetime.utcnow()
     db.session.commit()
 
 
