@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 from uuid import uuid4
 
-import pytz
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, user_logged_in
 from flask_socketio import SocketIO
@@ -68,9 +67,6 @@ def create_message():
     timestamp = datetime.now()
     new_message = Message(sender_id=sender_id, chat_id=chat_id,
                           message=message, timestamp=timestamp)
-    user_chats = UserChat.query.filter_by(chat_id=chat_id).all();
-    for user_chat in user_chats:
-        user_chat.last_message = message
 
     # Add recipients to the message
     for recipient_id in recipient_ids:
@@ -101,24 +97,6 @@ def get_chats():
     user_chats = UserChat.query.filter_by(user_id=current_user.id).all()
     serialized_chats = [chat.serialize() for chat in user_chats]
     return jsonify(serialized_chats)
-
-
-@app.route('/get_personal_chat_for_contact', methods=['POST'])
-def get_personal_chat_for_contact():
-    print("\n\nfine\n\n")
-    user_chats = request.json.get('user_chats')
-    for user_chat in user_chats:
-        current_chat_to_check = Chat.query.get(user_chat['chat_id']).user_chats
-        # print(current_chat_to_check)
-        # print(len(current_chat_to_check))
-        if len(current_chat_to_check) == 2:
-            for inside_user_chat in current_chat_to_check:
-                print(inside_user_chat.serialize())
-                if inside_user_chat.serialize()['user_id'] == current_user.id:
-                    print('smth')
-                    print(inside_user_chat.serialize())
-                    return inside_user_chat.serialize()
-    print("\n\nfailed\n\n")
 
 
 # @app.route('/last_seen')
@@ -200,8 +178,7 @@ def home():
 # Update the user's last seen time when they log in
 @user_logged_in.connect
 def update_last_seen(sender, user, **extra):
-    tz_moscow = pytz.timezone('Europe/Moscow')
-    user.last_seen = datetime.now(tz_moscow)
+    user.last_seen = datetime.utcnow()
     db.session.commit()
 
 
