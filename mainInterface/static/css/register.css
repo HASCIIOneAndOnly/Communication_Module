@@ -70,3 +70,9 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}

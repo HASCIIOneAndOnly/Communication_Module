@@ -41,6 +41,7 @@ class Chat(db.Model):
     __tablename__ = 'chat'
     id = db.Column(db.String(36), primary_key=True)
     unread_count = db.Column(db.Integer, primary_key=False)
+    token = db.Column(db.String, nullable=True)
 
     messages = db.relationship('Message', backref='chat', lazy=True)
     user_chats = db.relationship('UserChat', back_populates='chat')
@@ -50,6 +51,7 @@ class Chat(db.Model):
             'id': self.id,
             'messages': [message.serialize() for message in self.messages],
             'user_chats': [chat.serialize() for chat in self.user_chats],
+            'token': self.token,
         }
 
 
@@ -59,7 +61,7 @@ class UserChat(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     chat_id = db.Column(db.String(36), db.ForeignKey('chat.id'), primary_key=True)
     unread_messages_counter = db.Column(db.Integer, default=0)
-    last_message = db.Column(db.String)
+    last_message = db.Column(db.String, default="Этот чат пока пуст")
     chat_image = db.Column(db.LargeBinary, nullable=True)
 
     user = db.relationship("User", back_populates="user_chats")

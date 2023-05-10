@@ -1,15 +1,11 @@
+import json
 import sys
 
-import Telegram.Server as tg
 from flask import Flask, render_template, request
 
-import telegram
-
-import json
+import Telegram.Server as tg
 
 app = Flask(__name__)
-
-TOKEN = "sdfdfs"
 
 
 class TelegramInfo:
@@ -44,6 +40,7 @@ def index():
             sys.stdout = original_stdout
         # Do something with the token, like save it to a file or databaseё
         print("adadas")
+        tg.tg_setup()
         return render_template('SuccessfulConnection.html', token=token)
     return render_template('ConnectionPage.html')
 
@@ -53,11 +50,7 @@ def guide():
     return render_template('Guide.html')
 
 
-def main():
-    tg.tg_setup(TOKEN)
-
-
 if __name__ == '__main__':
+    tg.tg_setup()
     app.run(debug=True)
-    tg.tg_setup(TOKEN)
     # main()

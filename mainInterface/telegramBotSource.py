@@ -1,14 +1,9 @@
+import asyncio
 import json
-import requests
 import urllib
-import time
-
 from urllib.parse import urlparse
 
-from Telegram.dbhelper import DBHelper
-
-
-db = DBHelper()
+import requests
 
 TOKEN = "6039921783:AAF1cemhYX_oUXSfSPAPh9NRv8H7oK73-FM"
 # TOKEN = "empty"
@@ -20,16 +15,17 @@ welcoming_message = "Добрый день ! \n" \
                     "Пожалуйста выберите\n"
 
 
-def tg_setup():
-
-    db.setup()
+async def tg_setup():
     last_update_id = None
     while True:
-        updates = get_updates(last_update_id)
-        if len(updates["result"]) > 0:
-            last_update_id = get_last_update_id(updates) + 1
-            handle_updates(updates)
-        time.sleep(1)
+        try:
+            updates = get_updates(last_update_id)
+            if 'result' in updates and len(updates['result']) > 0:
+                last_update_id = get_last_update_id(updates) + 1
+                handle_updates(updates)
+        except Exception as e:
+            print(f"Error getting updates: {e}")
+        await asyncio.sleep(1)
 
 
 def get_url(url):
@@ -63,9 +59,7 @@ def handle_updates(updates):
     for update in updates["result"]:
         text = update["message"]["text"]
         chat = update["message"]["chat"]["id"]
-        items = db.get_items(chat)  ##
         if text == "/done":
-            keyboard = build_keyboard(items)
             send_message("Select an item to delete", chat, keyboard)
         elif text == "/start":
             send_message(
@@ -76,16 +70,6 @@ def handle_updates(updates):
             send_message("Выберите наиболее подходящую причину обращения:", chat, keyboard)
         elif text.startswith("/"):
             continue
-        elif text in items:
-            db.delete_item(text, chat)  ##
-            items = db.get_items(chat)  ##
-            keyboard = build_keyboard(items)
-            send_message("Select an item to delete", chat, keyboard)
-        else:
-            db.add_item(text, chat)  ##
-            items = db.get_items(chat)  ##
-            message = "\n".join(items)
-            send_message(message, chat)
 
 
 def get_last_chat_id_and_text(updates):

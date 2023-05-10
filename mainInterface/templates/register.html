@@ -33,6 +33,9 @@
     </div>
     <div class="register-button-box">
         <input type="submit" value="Зарегистрироваться">
+        {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+        {% endif %}
     </div>
 </form>
 <a href="{{ url_for('login') }}">Уже есть аккаунт? Войти</a>
