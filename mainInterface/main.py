@@ -111,18 +111,12 @@ def get_chats():
 
 @app.route('/get_personal_chat_for_contact', methods=['POST'])
 def get_personal_chat_for_contact():
-    print("\n\nfine\n\n")
     user_chats = request.json.get('user_chats')
     for user_chat in user_chats:
         current_chat_to_check = Chat.query.get(user_chat['chat_id']).user_chats
-        # print(current_chat_to_check)
-        # print(len(current_chat_to_check))
         if len(current_chat_to_check) == 2:
             for inside_user_chat in current_chat_to_check:
-                print(inside_user_chat.serialize())
                 if inside_user_chat.serialize()['user_id'] == current_user.id:
-                    print('smth')
-                    print(inside_user_chat.serialize())
                     return inside_user_chat.serialize()
     print("\n\nfailed\n\n")
 
@@ -142,7 +136,7 @@ def get_fast_responses():
                             "Автомобильный номер: 5 000 руб."
         },
         {
-            "short_version": "/Послать на ...",
+            "short_version": "/Невозможно ...",
             "full_version": "Прошу прощения, но наша компания не в силах помочь Вам с "
                             "исполнением озвученных пожеланий."
         }
@@ -249,14 +243,14 @@ def connect_telegram_source():
         chat_id = generate_unique_chat_id()
         chat = Chat(id=chat_id, unread_count=0, token=token)
         user_chat = UserChat(user_id=current_user.id, chat_id=chat_id,
-                             chat_name=token)
+                             chat_name="new chat tg")
         db.session.add(chat)
         db.session.add(user_chat)
         db.session.commit()
         print(token)
     print("connected")
-    render_template('ConnectionPage.html')
-    return redirect('ConnectionPage.html')
+    # render_template('ConnectionPage.html')
+    # return redirect('ConnectionPage.html')
 
 
 def start_tg_setup():

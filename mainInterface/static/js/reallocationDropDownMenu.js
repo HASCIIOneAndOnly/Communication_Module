@@ -9,13 +9,14 @@ let
     contactsReallocationButton = document.getElementById('settings-button-contacts');
 
 settingsButton.addEventListener('click', function () {
-    chatBoxUserInfo.innerHTML = "";
+    rightSideContainer.classList.remove('active');
     visualizeSettings();
     addChatButton.style.display = "none";
 });
 
 chatsReallocationButton.addEventListener('click', function () {
-    chatBoxUserInfo.innerHTML = "";
+    rightSideContainer.classList.remove('active');
+    // loadRegularRightSideAttributes();
     fetchChats().then(function () {
         console.log("chat fetching in chatsReallocationButton success")
     });
@@ -23,7 +24,7 @@ chatsReallocationButton.addEventListener('click', function () {
 })
 
 contactsReallocationButton.addEventListener('click', function () {
-    chatBoxUserInfo.innerHTML = "";
+
     fetchContacts().then(function () {
         console.log("contacts fetching in chatsReallocationButton success")
     });
@@ -38,7 +39,7 @@ function visualizeSettings() {
     settingsBoxNew0.classList.add('settings-box');
     settingsBoxNew0.innerHTML = `
                     <div class="settings-image">
-                        <img src="../static/img/profile-3.png" alt="">
+                        <img src="../static/img/fastReplies.png" alt="">
                     </div>
                     <div class = "settings-details">
                         <div class = "settings-title">
@@ -59,7 +60,7 @@ function visualizeSettings() {
     settingsBoxNew1.id = "automatic-responses-settings-button"
     settingsBoxNew1.innerHTML = `
                     <div class="settings-image">
-                        <img src="../static/img/profile-3.png" alt="">
+                        <img src="../static/img/automaticResponses.png" alt="">
                     </div>
                     <div class = "settings-details">
                         <div class = "settings-title">
@@ -80,7 +81,7 @@ function visualizeSettings() {
     settingsBoxNew2.id = "automatic-responses-settings-button"
     settingsBoxNew2.innerHTML = `
                     <div class="settings-image">
-                        <img src="../static/img/profile-3.png" alt="">
+                        <img src="../static/img/sourcesConnection.png" alt="">
                     </div>
                     <div class = "settings-details">
                         <div class = "settings-title">

@@ -3,7 +3,7 @@ let header = document.querySelector('.header'),
     faArrowLeft = document.querySelector('.fa-arrow-left'),
     files = document.querySelector('#files'),
     rightSideContainer = document.getElementById('right-side-container'),
-    msg = document.querySelector('#left-side-object-from-list'),
+    leftSideObjectFromList = document.querySelector('#left-side-object-from-list'),
     body = document.getElementById('body'),
     leftSide = document.getElementById('left-side'),
     chatList = document.getElementById('left-side-object-list'), // Script for the add-button for adding new chats
@@ -22,7 +22,7 @@ faArrowLeft.addEventListener('click', () => {
     files.classList.remove('active');
 });
 
-msg.addEventListener('click', () => {
+leftSideObjectFromList.addEventListener('click', () => {
     rightSideContainer.classList.add('active');
 });
 
@@ -34,7 +34,7 @@ async function fetchChats() {
     let response;
     let chatData;
     let success = false;
-    let numberOfAttemptsToFail = 5;
+    let numberOfAttemptsToFail = 8;
     await new Promise(resolve => setTimeout(resolve, 1000));
     while (!success) {
         if (numberOfAttemptsToFail === 0) {
@@ -75,6 +75,7 @@ async function fetchChats() {
         chatBoxNew.addEventListener('click', () => {
             chatBoxUserInfo.innerHTML = '';
             bottomPanel.style.display = "inherit";
+            // loadRegularRightSideAttributes();
             loadNecessaryDataForChosenChat(chatItem);
             localStorage.setItem('current_chat_id', chatItem.chat_id);
             rightSideContainer.classList.add('active');
@@ -83,6 +84,98 @@ async function fetchChats() {
         chatList.appendChild(chatBoxNew);
     });
 }
+
+// function loadRegularRightSideAttributes() {
+//     let parentDiv = document.getElementById('right-side-container');
+//     // create user info div element
+//     const userInfoDiv = document.createElement('div');
+//     userInfoDiv.setAttribute('class', 'chat-box-user-info');
+//     userInfoDiv.setAttribute('id', 'chatBoxUserInfo');
+//     parentDiv.appendChild(userInfoDiv);
+//
+//     // create messages container div element
+//     const messagesDiv = document.createElement('div');
+//     messagesDiv.setAttribute('class', 'messages-box');
+//     messagesDiv.setAttribute('id', 'messages-container');
+//     parentDiv.appendChild(messagesDiv);
+//
+//     // create bottom panel div element
+//     const bottomPanelDiv = document.createElement('div');
+//     bottomPanelDiv.setAttribute('class', 'bottom-panel');
+//     bottomPanelDiv.setAttribute('id', 'right-side-bottom-panel');
+//     parentDiv.appendChild(bottomPanelDiv);
+//
+//     // create paper clip button element
+//     const paperClipButton = document.createElement('button');
+//     paperClipButton.setAttribute('class', 'paper-clip-button');
+//     bottomPanelDiv.appendChild(paperClipButton);
+//
+//     // create popup fast responses block element
+//     const popupFastResponsesBlockDiv = document.createElement('div');
+//     popupFastResponsesBlockDiv.setAttribute('id', 'popup-fast-responses-block');
+//     bottomPanelDiv.appendChild(popupFastResponsesBlockDiv);
+//
+//     // create fast responses button element
+//     const fastResponsesButton = document.createElement('button');
+//     fastResponsesButton.setAttribute('class', 'fast-responses-button');
+//     fastResponsesButton.setAttribute('id', 'fast-responses-button');
+//     popupFastResponsesBlockDiv.appendChild(fastResponsesButton);
+//
+//     // create font awesome icon element for fast responses button
+//     const fastResponsesIcon = document.createElement('i');
+//     fastResponsesIcon.setAttribute('class', 'fa-solid fa-book');
+//     fastResponsesButton.appendChild(fastResponsesIcon);
+//
+//     // create popup container element
+//     const popupContainerUl = document.createElement('ul');
+//     popupContainerUl.setAttribute('id', 'popup-container');
+//     popupFastResponsesBlockDiv.appendChild(popupContainerUl);
+//
+//     // create response list item element
+//     const responseLi = document.createElement('li');
+//     responseLi.setAttribute('class', 'response');
+//     popupContainerUl.appendChild(responseLi);
+//
+//     // create short version paragraph element for response
+//     const shortVersionP = document.createElement('p');
+//     shortVersionP.setAttribute('class', 'short-version');
+//     shortVersionP.textContent = '/Привет';
+//     responseLi.appendChild(shortVersionP);
+//
+//     // create full version paragraph element for response
+//     const fullVersionP = document.createElement('p');
+//     fullVersionP.setAttribute('class', 'full-version');
+//     fullVersionP.textContent = 'Добрый день! Рады Вас приветствовать !';
+//     responseLi.appendChild(fullVersionP);
+//
+//     // create label element
+//     const label = document.createElement('label');
+//     bottomPanelDiv.appendChild(label);
+//
+//     // create message input box element
+//     const messageInputBoxTextarea = document.createElement('textarea');
+//     messageInputBoxTextarea.setAttribute('class', 'message-input');
+//     messageInputBoxTextarea.setAttribute('id', 'message-input-box');
+//     messageInputBoxTextarea.setAttribute('placeholder', 'Type your message');
+//     label.appendChild(messageInputBoxTextarea);
+//
+//     // create clear message box button element
+//     const clearMessageBoxButton = document.createElement('button');
+//     clearMessageBoxButton.setAttribute('class', 'clear-message-box-button');
+//     clearMessageBoxButton.setAttribute('id', 'clear-message-box-button');
+//     clearMessageBoxButton.textContent = 'x';
+//     clearMessageBoxButton.addEventListener('click', function () {
+//         messageInputBox.value = "";
+//     });
+//     label.appendChild(clearMessageBoxButton);
+//
+//     // create send message button element
+//     const sendMessageButton = document.createElement('button');
+//     sendMessageButton.setAttribute('class', 'send-button');
+//     sendMessageButton.setAttribute('id', 'send-message-button');
+//     sendMessageButton.textContent = 'Send';
+//     bottomPanelDiv.appendChild(sendMessageButton);
+// }
 
 function createCircleForLeftSideListObject(itemToCreate, item) {
     if (item.chat_image === null) {

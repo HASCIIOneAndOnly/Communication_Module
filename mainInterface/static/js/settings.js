@@ -1,4 +1,4 @@
-let bottomPanel = document.getElementById('right-side-bottom-panel');
+// let bottomPanel = document.getElementById('right-side-bottom-panel');
 
 // function visualizeSettings() {
 //     chatList.innerHTML = "";

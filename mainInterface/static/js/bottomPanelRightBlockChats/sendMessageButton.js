@@ -6,17 +6,15 @@ let sendMessageButton = document.getElementById('send-message-button'),
     messagesContainer = document.getElementById('messages-container');
 
 sendMessageButton.addEventListener('click', function () {
-    console.log("click");
     if (messageInputArea.value === "") {
-        console.log("bad click");
     } else {
         // Define the data to send in the request
         const data = {
             chat_id: localStorage.getItem('current_chat_id'),
             message: messageInputArea.value,
         };
-        console.log(data.chat_id)
-        console.log(data.message)
+        // console.log(data.chat_id)
+        // console.log(data.message)
 
         // Emit the send_message event using the socket connection
         socket.emit('send_message', data);
