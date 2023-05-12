@@ -99,6 +99,7 @@ class Message(db.Model):
     chat_id = db.Column(db.String(36), db.ForeignKey('chat.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
+    file_data = db.Column(db.LargeBinary, nullable=True)  # Данные файла
 
     sender = db.relationship('User', foreign_keys=[sender_id], backref=db.backref('sent_messages', lazy=True),
                              lazy='joined')
@@ -112,4 +113,6 @@ class Message(db.Model):
             'chat_id': self.chat_id,
             'message': self.message,
             'timestamp': self.timestamp,
+            'file_data': self.file_data,
         }
+

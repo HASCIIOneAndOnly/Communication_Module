@@ -256,3 +256,32 @@ inputSearch.addEventListener('input', async () => {
     }
 });
 
+
+document.getElementById('fileInput').addEventListener('change', function() {
+    // Удаляем старую ссылку, если она существует
+    let oldLink = document.getElementById('uploaded-file');
+    if (oldLink) {
+        oldLink.remove();
+    }
+
+    // Получаем выбранный файл
+    let file = this.files[0];
+
+    // Создаем элемент ссылки
+    let link = document.createElement('a');
+    link.href = URL.createObjectURL(file);
+    link.download = file.name;
+    link.textContent = file.name;
+    link.id = 'uploaded-file';  // Даем ID, чтобы мы могли удалять старую ссылку
+
+    // Изменяем стиль z-index ссылки
+    link.style.zIndex = '1';  // Устанавливаем z-index выше, чем у bottomPanel
+
+    // Вставляем ссылку перед полем ввода сообщения
+    document.getElementById('message-input-box').insertAdjacentElement('beforebegin', link);
+
+    // Изменяем высоту bottomPanel
+    bottomPanel.style.height += '100px';  // Установите высоту, которая вам подходит
+});
+
+
