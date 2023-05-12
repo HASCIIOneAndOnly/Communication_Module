@@ -13,10 +13,6 @@ sendMessageButton.addEventListener('click', function () {
             chat_id: localStorage.getItem('current_chat_id'),
             message: messageInputArea.value,
         };
-        // console.log(data.chat_id)
-        // console.log(data.message)
-
-        // Emit the send_message event using the socket connection
         socket.emit('send_message', data);
     }
     messageInputArea.value = "";
@@ -26,9 +22,25 @@ sendMessageButton.addEventListener('click', function () {
 socket.on('new_message', function (data) {
     // Create a new HTML element for the message
     const messageElement = document.createElement('div');
-    messageElement.classList.add('message'); // Optional: add a CSS class for styling
+    messageElement.classList.add('message-content'); // Add a CSS class for styling
     messageElement.textContent = data.message; // Set the content of the element to the message text
 
-    // Append the new message element to the messages container
-    messagesContainer.appendChild(messageElement);
+    // Create a message container
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('message-container')
+    if (data.sender_id == CURRENT_USER_ID) { // Replace with the actual current user id
+        messageContainer.classList.add('sent-message');
+    } else {
+        messageContainer.classList.add('received-message');
+    }
+
+    // Append message element to the message container
+    messageContainer.appendChild(messageElement);
+
+    // Append the new message container to the messages container
+    messagesContainer.appendChild(messageContainer);
+    messagesContainer.prepend(messageContainer);
+
+    // Scroll to the bottom of the messages container
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 });

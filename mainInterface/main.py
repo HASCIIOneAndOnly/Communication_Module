@@ -11,7 +11,7 @@ import telegramBotSource as tg
 from models import db, User, Message, Chat, UserChat
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amepifanov:fhntv2003@localhost:5050/postgres'
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 users_sockets = {}
@@ -32,7 +32,8 @@ def getUsers():
 @app.route('/mainPage')
 @login_required
 def mainPage():
-    return render_template('mainPage.html')
+    return render_template('mainPage.html', current_user_id=current_user.id)
+
 
 
 def create_chats_for_new_user(new_user):
@@ -85,6 +86,7 @@ def create_message(data):
     db.session.commit()
     message_data = {
         'message': message,
+        'sender_id': sender_id
     }
     emit('new_message', message_data, broadcast=True)
     # Return a response indicating success
