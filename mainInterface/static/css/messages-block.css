@@ -1,9 +1,17 @@
 #messages-container {
+    position: relative;
     display: flex;
     flex-direction: column-reverse;
     background-color: transparent;
     padding: 10px;
     border-radius: 10px;
+    /*flex-grow: 1;*/
+    overflow-y: auto;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    max-height: calc(100% - 20px);;
+
+    flex: 1;
 }
 
 #messages-container .sent-message {
@@ -29,6 +37,8 @@
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 49%;
+    word-wrap: break-word;
 }
 
 #messages-container .received-message .message-content {
@@ -36,6 +46,9 @@
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 49%;
+    word-wrap: break-word;
+    overflow: auto
 }
 
 #starting-chat-message {

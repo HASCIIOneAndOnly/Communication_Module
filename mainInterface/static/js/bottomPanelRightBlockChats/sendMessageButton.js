@@ -5,6 +5,18 @@ let sendMessageButton = document.getElementById('send-message-button'),
     messageInputArea = document.getElementById('message-input-box'),
     messagesContainer = document.getElementById('messages-container');
 
+
+// Execute a function when the user presses a key on the keyboard
+messageInputArea.addEventListener("keypress", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        sendMessageButton.click();
+    }
+});
+
 sendMessageButton.addEventListener('click', function () {
     if (messageInputArea.value === "") {
     } else {
@@ -43,4 +55,9 @@ socket.on('new_message', function (data) {
 
     // Scroll to the bottom of the messages container
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    let startingMessage = document.getElementById('starting-chat-message');
+    if (startingMessage != null) {
+        startingMessage.style.display = 'none';
+    }
+    fetchChats();
 });

@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
     # modded
     user_chats = db.relationship('UserChat', back_populates='user')
 
+
     def __repr__(self):
         return f'<User {self.username}>'
 
@@ -63,6 +64,7 @@ class UserChat(db.Model):
     unread_messages_counter = db.Column(db.Integer, default=0)
     last_message = db.Column(db.String, default="Этот чат пока пуст")
     chat_image = db.Column(db.LargeBinary, nullable=True)
+    user_chat_color = db.Column(db.String(32), default="#E0C3FC")
 
     user = db.relationship("User", back_populates="user_chats")
     chat = db.relationship('Chat', back_populates='user_chats')
@@ -77,6 +79,7 @@ class UserChat(db.Model):
             'unread_messages_counter': self.unread_messages_counter,
             'chat_image': self.chat_image,
             'last_message': self.last_message,
+            'user_chat_color':self.user_chat_color,
         }
 
     def getName(self):

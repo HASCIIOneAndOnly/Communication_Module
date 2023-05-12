@@ -29,7 +29,7 @@ async function fetchChats() {
     let chatData;
     let success = false;
     let numberOfAttemptsToFail = 8;
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 100));
     while (!success) {
         if (numberOfAttemptsToFail === 0) {
             console.log("Failed while fetching chats");
@@ -47,6 +47,12 @@ async function fetchChats() {
             await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
+
+    return await generateHtmlAndAddEventListenerForChatBlocks(chatData)
+}
+
+
+async function generateHtmlAndAddEventListenerForChatBlocks(chatData) {
     chatList.innerHTML = '';
     // create chat box for each chat item
     chatData.forEach(chatItem => {
@@ -56,27 +62,34 @@ async function fetchChats() {
         createCircleForLeftSideListObject(chatBoxNew, chatItem);
 
         chatBoxNew.innerHTML += `
-                    <div class="left-side-object-from-list-details">
-                        <div class="left-side-object-from-list-details-title">
-                            <h3>${chatItem.chat_name}</h3>
-                        </div>
-                        <div class="left-side-object-from-list-details-subtitle">
-                            <p>${chatItem.last_message}</p>
-                            <span>${chatItem.unread_messages_counter}</span>
-                        </div>
-                    </div>
-                `;
-        chatBoxNew.addEventListener('click', () => {
+    <div class="left-side-object-from-list-details">
+        <div class="left-side-object-from-list-details-title">
+            <h3>${chatItem.chat_name}</h3>
+        </div>
+        <div class="left-side-object-from-list-details-subtitle" id="left-side-object-from-list-details-subtitle">
+            <p>${chatItem.last_message}</p>
+            ${chatItem.unread_messages_counter !== 0 ? `<span>${chatItem.unread_messages_counter}</span>` : ''}
+        </div>
+    </div>
+`;
+        chatBoxNew.addEventListener('click', async () => {
             chatBoxUserInfo.innerHTML = '';
             bottomPanel.style.display = "inherit";
             // loadRegularRightSideAttributes();
+
             loadNecessaryDataForChosenChat(chatItem);
             localStorage.setItem('current_chat_id', chatItem.chat_id);
             rightSideContainer.classList.add('active');
-            fetchFastResponses();
+            await fetchFastResponses();
+            fetchChats();
         })
+        let circle = document.getElementById('left-side-object-from-list-initials-circle');
+        if (circle != null) {
+            circle.style.backgroundColor = chatItem.user_chat_color;
+        }
         chatList.appendChild(chatBoxNew);
     });
+
     return chatData;
 }
 
@@ -98,16 +111,19 @@ function createCircleForLeftSideListObject(itemToCreate, item) {
 
 // Append the image to an HTML element
         itemToCreate.appendChild(img);
+
     }
 }
 
 function createAbbreviation(item) {
-    let chat_name_abbr = '';
+    let chatNameAbbr = '';
     let splitUserName = item.chat_name.split(' ');
-    for (let i = 0; i < splitUserName.length; i++) {
-        chat_name_abbr += splitUserName[i][0].toUpperCase();
+    let abbreviationLength = splitUserName.length;
+    abbreviationLength = abbreviationLength > 3 ? 3 : abbreviationLength;
+    for (let i = 0; i < abbreviationLength; i++) {
+        chatNameAbbr += splitUserName[i][0].toUpperCase();
     }
-    return chat_name_abbr;
+    return chatNameAbbr;
 }
 
 function loadNecessaryDataForChosenChat(chatItem) {
@@ -123,6 +139,7 @@ function loadNecessaryDataForChosenChat(chatItem) {
         const circleImageOrAbbreviation = document.createElement('span');
         circleImageOrAbbreviation.className = 'initials';
         circleImageOrAbbreviation.innerHTML = `${createAbbreviation(chatItem)}`
+        circleImageOrAbbreviationBlock.style.backgroundColor = chatItem.user_chat_color;
         circleImageOrAbbreviationBlock.appendChild(circleImageOrAbbreviation);
     } else {
         circleImageOrAbbreviationBlock.className = 'left-side-object-from-list-img';
@@ -193,6 +210,9 @@ function loadNecessaryDataForChosenChat(chatItem) {
         }
 
     })
+    // chatItem.unread_messages_counter = 0;
+    // console.log(chatItem.chat_id);
+    // console.log(chatItem.unread_messages_counter);
 }
 
 function loadMessages(chatItem) {

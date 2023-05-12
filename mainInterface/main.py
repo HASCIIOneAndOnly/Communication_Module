@@ -11,7 +11,7 @@ import telegramBotSource as tg
 from models import db, User, Message, Chat, UserChat
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amepifanov:fhntv2003@localhost:5050/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 users_sockets = {}
@@ -33,7 +33,6 @@ def getUsers():
 @login_required
 def mainPage():
     return render_template('mainPage.html', current_user_id=current_user.id)
-
 
 
 def create_chats_for_new_user(new_user):
@@ -81,6 +80,14 @@ def create_message(data):
         recipient = User.query.get(recipient_id)
         new_message.recipients.append(recipient)
 
+    for user_chat in chat.user_chats:
+        if len(message) > 32:
+            user_chat.last_message = message[:32] + "..."
+        else:
+            user_chat.last_message = message
+        if user_chat.user_id != current_user.id:
+            user_chat.unread_messages_counter += 1
+
     # Add the message to the database and commit the transaction
     db.session.add(new_message)
     db.session.commit()
@@ -101,6 +108,11 @@ def get_last_100_messages():
     chat = user_chat.chat
     last_100_messages = Message.query.filter_by(chat_id=chat.id).limit(100).all()
     messages = [message.serialize() for message in last_100_messages]
+
+    user_chat.unread_messages_counter = 0
+    print(user_chat.unread_messages_counter)
+    db.session.commit()
+
     return jsonify(messages)
 
 
