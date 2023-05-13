@@ -242,16 +242,16 @@ async function filterChats(query) {
         createCircleForLeftSideListObject(chatBoxNew, chatItem);
 
         chatBoxNew.innerHTML += `
-                    <div class="left-side-object-from-list-details">
-                        <div class="left-side-object-from-list-details-title">
-                            <h3>${chatItem.chat_name}</h3>
-                        </div>
-                        <div class="left-side-object-from-list-details-subtitle">
-                            <p>${chatItem.last_message}</p>
-                            <span>${chatItem.unread_messages_counter}</span>
-                        </div>
-                    </div>
-                `;
+    <div class="left-side-object-from-list-details">
+        <div class="left-side-object-from-list-details-title">
+            <h3>${chatItem.chat_name}</h3>
+        </div>
+        <div class="left-side-object-from-list-details-subtitle" id="left-side-object-from-list-details-subtitle">
+            <p>${chatItem.last_message}</p>
+            ${chatItem.unread_messages_counter !== 0 ? `<span>${chatItem.unread_messages_counter}</span>` : ''}
+        </div>
+    </div>
+`;
         chatBoxNew.addEventListener('click', () => {
             chatBoxUserInfo.innerHTML = '';
             bottomPanel.style.display = "inherit";

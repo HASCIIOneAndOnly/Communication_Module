@@ -53,10 +53,13 @@
 
 #starting-chat-message {
     position: relative;
-    background-color: plum;
+    background-color: #E0C3FC;
+
+    border-radius: 10px;
+    padding: 10px;
 
     margin: auto;
-    font-size: 20px;
+    font-size: 18px;
     width: fit-content;
     height: fit-content;
     display: flex; /* add display: flex */

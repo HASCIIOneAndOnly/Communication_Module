@@ -68,9 +68,9 @@
 }
 
 #popup-chat-creation-block.active #add-chat-btn {
-    background-color: #3e8e41;
+    background-color: #E0C3FC;
 }
 
 #popup-container-chat-creation li:hover {
-    background-color: #3e8e41;
+    background-color: #E0C3FC;
 }

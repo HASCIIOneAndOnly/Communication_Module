@@ -171,11 +171,11 @@ main {
 }
 
 #drop-down-reallocation-block.active .toggle-button {
-    background-color: #3e8e41;
+    background-color: #E0C3FC;
 }
 
 #drop-down-reallocation li:hover {
-    background-color: #3e8e41;
+    background-color: #E0C3FC;
 }
 
 
@@ -314,7 +314,7 @@ main {
     height: 2rem;
     border-radius: 50%;
     color: var(--whiteColor);
-    background-color: var(--greenColor);
+    background-color: #E0C3FC;
     font-size: 1.3rem;
     font-weight: 500;
     display: flex;

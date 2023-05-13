@@ -49,7 +49,7 @@ button[type="submit"] {
 }
 
 button:hover {
-    background-color: #3e8e41;
+    background-color: #E0C3FC;
 }
 
 a.guide-button {
@@ -64,7 +64,7 @@ a.guide-button {
 }
 
 a.guide-button:hover {
-    background-color: #3e8e41;
+    background-color: #E0C3FC;
 }
 
 .center-block {
