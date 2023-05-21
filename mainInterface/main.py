@@ -1,24 +1,82 @@
-import asyncio
 import os
+import time
 from datetime import datetime
 from uuid import uuid4
+from threading import Thread
+import requests
 
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, user_logged_in
 from flask_socketio import SocketIO, emit
 
-import telegramBotSource as tg
+# import telegramBotSource as tg
 from models import db, User, Message, Chat, UserChat
 
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amepifanov:fhntv2003@localhost:5050/postgres'
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 users_sockets = {}
+TOKEN = '5717083963:AAHflxPNEMzSklg_hc5Snbs24MQv4aaUyNU'
+URL = 'https://api.telegram.org/bot'
 
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def get_updates(offset=0):
+    result = requests.get(f'{URL}{TOKEN}/getUpdates?offset={offset}').json()
+    return result['result']
+
+
+def run():
+    update_id = 0
+    if _update := get_updates():
+        update_id = _update[-1]['update_id']
+    while True:
+        time.sleep(2)
+        messages = get_updates(update_id) # Получаем обновления
+        print(len(messages))
+        for message in messages:
+            # Если в обновлении есть ID больше чем ID последнего сообщения, значит пришло новое сообщение
+            if update_id < message['update_id']:
+                update_id = message['update_id'] # Присваиваем ID последнего отправленного сообщения боту
+                if message['message']['text'] == '/start':
+                    create_telegram_chat_for_all(message['message']['chat']['first_name'], message['message']['chat']['id'])
+                else:
+                    chat_ids = []
+                    with app.app_context():
+                        chats = Chat.query.filter_by(token=str(message['message']['chat']['id'])).all()
+                        for chat in chats:
+                            chat_ids.append(chat.id)
+                            # Create a new message object
+                            timestamp = datetime.now()
+                            new_message = Message(sender_id=-1, chat_id=chat.id,
+                                                    message=message['message']['text'], timestamp=timestamp)
+
+                            # Add recipients to the message
+                            recipient_ids = [inner_user_chat.user_id for inner_user_chat in chat.user_chats if
+                                                inner_user_chat.user_id != -1]
+                            print(recipient_ids)
+                            for recipient_id in recipient_ids:
+                                recipient = User.query.get(recipient_id)
+                                new_message.recipients.append(recipient)
+
+                            # Add the message to the database and commit the transaction
+                            db.session.add(new_message)
+                            db.session.commit()
+
+                for _id in chat_ids:
+                    message_data = {
+                        'message': message['message']['text'],
+                        'sender_id': -1,
+                        'chat_id': _id
+                    }
+                    socketio.emit('new_message', message_data)
+            print(message)
+
 
 
 @app.route('/getUsers')
@@ -36,7 +94,7 @@ def mainPage():
 
 
 def create_chats_for_new_user(new_user):
-    existing_users = User.query.filter(User.id != new_user.id).all()
+    existing_users = User.query.filter(User.id != new_user.id, User.id != -1).all()
     for existing_user in existing_users:
         chat_id = generate_unique_chat_id()
         chat = Chat(id=chat_id, unread_count=0)
@@ -51,7 +109,6 @@ def create_chats_for_new_user(new_user):
         db.session.add(user2_chat)
     db.session.commit()
 
-
 @socketio.on('send_message')
 def create_message(data):
     # Get data from the request
@@ -61,39 +118,40 @@ def create_message(data):
     sender_id = current_user.id
 
     chat = Chat.query.get(chat_id)
-    if chat.token:
-        print(chat.token)
-        token = chat.token
-        url = "https://api.telegram.org/bot{}/".format(token)
-        # send_message(message, url, 1054850069)
-
-    recipient_ids = [user_chat.user_id for user_chat in chat.user_chats if user_chat.user_id != sender_id]
-    print(chat.user_chats)
+    if chat.token and not data.get('flag_tg'):
+        chat_id_telegram = chat.token
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id_telegram}&text={message}"
+        requests.get(url).json()
 
     # Create a new message object
     timestamp = datetime.now()
     new_message = Message(sender_id=sender_id, chat_id=chat_id,
                           message=message, timestamp=timestamp)
 
+
+
+    recipient_ids = [user_chat.user_id for user_chat in chat.user_chats if user_chat.user_id != sender_id]
+    print(chat.user_chats)
     # Add recipients to the message
     for recipient_id in recipient_ids:
-        recipient = User.query.get(recipient_id)
-        new_message.recipients.append(recipient)
-
+         recipient = User.query.get(recipient_id)
+         new_message.recipients.append(recipient)
+    print(recipient_ids)
     for user_chat in chat.user_chats:
         if len(message) > 32:
             user_chat.last_message = message[:32] + "..."
         else:
-            user_chat.last_message = message
+             user_chat.last_message = message
         if user_chat.user_id != current_user.id:
-            user_chat.unread_messages_counter += 1
+             user_chat.unread_messages_counter += 1
 
     # Add the message to the database and commit the transaction
     db.session.add(new_message)
     db.session.commit()
     message_data = {
         'message': message,
-        'sender_id': sender_id
+        'sender_id': sender_id,
+        'chat_id': chat_id
     }
     emit('new_message', message_data, broadcast=True)
     # Return a response indicating success
@@ -249,33 +307,73 @@ def register():
     return render_template('register.html')
 
 
-@app.route("/telegram_source_connection", methods=['GET', 'POST'])
-def connect_telegram_source():
-    if request.method == 'POST':
-        # token = request.form["token"]
-        token = "6039921783:AAF1cemhYX_oUXSfSPAPh9NRv8H7oK73-FM"
-        chat_id = generate_unique_chat_id()
-        chat = Chat(id=chat_id, unread_count=0, token=token)
-        user_chat = UserChat(user_id=current_user.id, chat_id=chat_id,
-                             chat_name="new chat tg")
-        db.session.add(chat)
-        db.session.add(user_chat)
+# @app.route("/telegram_source_connection", methods=['GET', 'POST'])
+# def connect_telegram_source():
+#     if request.method == 'POST':
+#         # token = request.form["token"]
+#         token = "6039921783:AAF1cemhYX_oUXSfSPAPh9NRv8H7oK73-FM"
+#         chat_id = generate_unique_chat_id()
+#         chat = Chat(id=chat_id, unread_count=0, token=token)
+#         user_chat = UserChat(user_id=current_user.id, chat_id=chat_id,
+#                              chat_name="new chat tg")
+#         db.session.add(chat)
+#         db.session.add(user_chat)
+#         db.session.commit()
+#         print(token)
+#     print("connected")
+#     # render_template('ConnectionPage.html')
+#     # return redirect('ConnectionPage.html')
+
+
+
+
+# def start_tg_setup():
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     loop.run_until_complete(tg.tg_setup())
+
+
+def create_telegram_chat_for_all(username, token):
+    print(username, token)
+    with app.app_context():
+        existing_users = User.query.all()
+        for existing_user in existing_users:
+            chat_id = generate_unique_chat_id()
+            chat = Chat(id=chat_id, unread_count=0, token=token)
+            user_chat = UserChat(user_id=existing_user.id, chat_id=chat_id, chat_name=username)
+            db.session.add(chat)
+            db.session.add(user_chat)
         db.session.commit()
-        print(token)
-    print("connected")
-    # render_template('ConnectionPage.html')
-    # return redirect('ConnectionPage.html')
 
 
-def start_tg_setup():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(tg.tg_setup())
+# @bot.message_handler(commands=["start"])
+# def start(m):
+#     print("ok")
+#     create_telegram_chat_for_all(m.chat.first_name, m.chat.id)
+#     bot.send_message(m.chat.id, 'Я на связи. Напиши мне что-нибудь )')
+
+def add_bot_user():
+    bot_user = User(
+        id = -1,
+        username="Bot",
+        email=str(uuid4()),
+        password=str(uuid4()),
+        last_seen=datetime.utcnow()
+    )
+    db.session.add(bot_user)
+    db.session.commit()
+
+
+def start_app():
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, use_reloader=False, port=5700)
 
 
 if __name__ == '__main__':
-    # thread = threading.Thread(target=start_tg_setup)
-    # thread.start()
     with app.app_context():
         db.create_all()
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=5700)
+        # add_bot_user()
+    botThread = Thread(target=run)
+    botThread.start()
+    start_app()
+
+

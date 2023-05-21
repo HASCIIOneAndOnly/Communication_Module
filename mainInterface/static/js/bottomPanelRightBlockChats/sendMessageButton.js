@@ -33,14 +33,16 @@ sendMessageButton.addEventListener('click', function () {
 // Add a listener for the new_message event to add the message to the messagesContainer
 socket.on('new_message', function (data) {
     // Create a new HTML element for the message
+    if (localStorage.getItem('current_chat_id') != data.chat_id) {
+        return;
+    }
     const messageElement = document.createElement('div');
     messageElement.classList.add('message-content'); // Add a CSS class for styling
     messageElement.textContent = data.message; // Set the content of the element to the message text
-
     // Create a message container
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('message-container')
-    if (data.sender_id == CURRENT_USER_ID) { // Replace with the actual current user id
+    if (data.sender_id == CURRENT_USER_ID) {
         messageContainer.classList.add('sent-message');
     } else {
         messageContainer.classList.add('received-message');

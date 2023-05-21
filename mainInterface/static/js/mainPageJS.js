@@ -76,7 +76,6 @@ async function generateHtmlAndAddEventListenerForChatBlocks(chatData) {
             chatBoxUserInfo.innerHTML = '';
             bottomPanel.style.display = "inherit";
             // loadRegularRightSideAttributes();
-
             loadNecessaryDataForChosenChat(chatItem);
             localStorage.setItem('current_chat_id', chatItem.chat_id);
             rightSideContainer.classList.add('active');
@@ -128,6 +127,7 @@ function createAbbreviation(item) {
 
 function loadNecessaryDataForChosenChat(chatItem) {
     messagesBox.innerHTML = "";
+    // elementProperties.set(messagesBox, { chat_id: chatItem. });
 
     const contentHeader = document.createElement('div');
     contentHeader.className = 'content-header';
