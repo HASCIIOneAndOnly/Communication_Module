@@ -304,4 +304,8 @@ document.getElementById('fileInput').addEventListener('change', function() {
     bottomPanel.style.height += '100px';  // Установите высоту, которая вам подходит
 });
 
+socket.on('load_chats', function () {
+    fetchChats();
+});
+
 
