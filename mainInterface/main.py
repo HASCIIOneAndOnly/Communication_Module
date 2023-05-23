@@ -1,20 +1,20 @@
 import os
 import time
 from datetime import datetime
-from uuid import uuid4
 from threading import Thread
-import requests
+from uuid import uuid4
 
+import requests
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, user_logged_in
 from flask_socketio import SocketIO, emit
 
 # import telegramBotSource as tg
-from models import db, User, Message, Chat, UserChat
-
+from models import db, User, Message, Chat, UserChat, ShortVersion
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amepifanov:fhntv2003@localhost:5050/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:liubov1969@localhost:60042/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 users_sockets = {}
@@ -25,35 +25,29 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-first_bot_chats = set()
-second_bot_chats = set()
 
-
-def get_updates(token):
-    result = requests.get(f'{URL}{token}/getUpdates?offset={0}').json()
+def get_updates(offset=0):
+    result = requests.get(f'{URL}{TOKEN}/getUpdates?offset={offset}').json()
     return result['result']
 
 
-def run_bot(token):
+def run():
     update_id = 0
-    if _update := get_updates(token):
+    if _update := get_updates():
         update_id = _update[-1]['update_id']
     while True:
         time.sleep(2)
-        messages = get_updates(token) # Получаем обновления
+        messages = get_updates(update_id)  # Получаем обновления
+        print(len(messages))
         for message in messages:
-            chat_ids = []
             # Если в обновлении есть ID больше чем ID последнего сообщения, значит пришло новое сообщение
             if update_id < message['update_id']:
-                print('check')
-                update_id = message['update_id'] # Присваиваем ID последнего отправленного сообщения боту
+                update_id = message['update_id']  # Присваиваем ID последнего отправленного сообщения боту
                 if message['message']['text'] == '/start':
-                    with app.app_context():
-                        print(message['message']['chat']['id'])
-                        if Chat.query.filter_by(token=str(message['message']['chat']['id'])).first() is None:
-                            create_telegram_chat_for_all(message['message']['chat']['first_name'], message['message']['chat']['id'])
-                            socketio.emit('load_chats')
+                    create_telegram_chat_for_all(message['message']['chat']['first_name'],
+                                                 message['message']['chat']['id'])
                 else:
+                    chat_ids = []
                     with app.app_context():
                         chats = Chat.query.filter_by(token=str(message['message']['chat']['id'])).all()
                         for chat in chats:
@@ -63,27 +57,26 @@ def run_bot(token):
                             new_message = Message(sender_id=-1, chat_id=chat.id,
                                                   message=message['message']['text'], timestamp=timestamp)
 
-
                             # Add recipients to the message
                             recipient_ids = [inner_user_chat.user_id for inner_user_chat in chat.user_chats if
-                                                inner_user_chat.user_id != -1]
+                                             inner_user_chat.user_id != -1]
+                            print(recipient_ids)
                             for recipient_id in recipient_ids:
-                                recipient = db.session.get(User, recipient_id)
+                                recipient = User.query.get(recipient_id)
                                 new_message.recipients.append(recipient)
 
                             # Add the message to the database and commit the transaction
                             db.session.add(new_message)
                             db.session.commit()
 
-                        for _id in chat_ids:
-                            message_data = {
-                                'message': message['message']['text'],
-                                'sender_id': -1,
-                                'chat_id': _id
-                            }
-                            socketio.emit('new_message', message_data)
-                        print(message)
-
+                for _id in chat_ids:
+                    message_data = {
+                        'message': message['message']['text'],
+                        'sender_id': -1,
+                        'chat_id': _id
+                    }
+                    socketio.emit('new_message', message_data)
+            print(message)
 
 
 @app.route('/getUsers')
@@ -116,6 +109,7 @@ def create_chats_for_new_user(new_user):
         db.session.add(user2_chat)
     db.session.commit()
 
+
 @socketio.on('send_message')
 def create_message(data):
     # Get data from the request
@@ -124,7 +118,7 @@ def create_message(data):
 
     sender_id = current_user.id
 
-    chat = db.session.get(Chat, chat_id)
+    chat = Chat.query.get(chat_id)
     if chat.token and not data.get('flag_tg'):
         chat_id_telegram = chat.token
         url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id_telegram}&text={message}"
@@ -135,22 +129,20 @@ def create_message(data):
     new_message = Message(sender_id=sender_id, chat_id=chat_id,
                           message=message, timestamp=timestamp)
 
-
-
     recipient_ids = [user_chat.user_id for user_chat in chat.user_chats if user_chat.user_id != sender_id]
     print(chat.user_chats)
     # Add recipients to the message
     for recipient_id in recipient_ids:
-         recipient = db.session.get(User, recipient_id)
-         new_message.recipients.append(recipient)
+        recipient = User.query.get(recipient_id)
+        new_message.recipients.append(recipient)
     print(recipient_ids)
     for user_chat in chat.user_chats:
         if len(message) > 32:
             user_chat.last_message = message[:32] + "..."
         else:
-             user_chat.last_message = message
+            user_chat.last_message = message
         if user_chat.user_id != current_user.id:
-             user_chat.unread_messages_counter += 1
+            user_chat.unread_messages_counter += 1
 
     # Add the message to the database and commit the transaction
     db.session.add(new_message)
@@ -202,24 +194,9 @@ def get_personal_chat_for_contact():
 
 @app.route('/fastResponses')
 def get_fast_responses():
-    # Here you would retrieve the chat data from your database or other data source
-    # and format it as a list of dictionaries
-    fast_responses = [
-        {
-            "short_version": "/Привет",
-            "full_version": "Добрый день! Рады Вас приветствовать !"
-        },
-        {
-            "short_version": "/Цены",
-            "full_version": "Дорожный знак: 20 000 руб. "
-                            "Автомобильный номер: 5 000 руб."
-        },
-        {
-            "short_version": "/Невозможно ...",
-            "full_version": "Прошу прощения, но наша компания не в силах помочь Вам с "
-                            "исполнением озвученных пожеланий."
-        }
-    ]
+    user = User.query.get(current_user.id)
+
+    fast_responses = [short_version.serialize() for short_version in user.short_versions]
     # Return the chat data as a JSON object
     return jsonify(fast_responses)
 
@@ -279,7 +256,7 @@ def update_last_seen(sender, user, **extra):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.session.get(User, user_id)
+    return User.query.get(user_id)
 
 
 def generate_unique_chat_id():
@@ -308,7 +285,6 @@ def register():
         db.session.commit()
 
         create_chats_for_new_user(new_user)
-        socketio.emit('load_chats')
 
         return redirect(url_for('login'))
 
@@ -327,18 +303,51 @@ def create_telegram_chat_for_all(username, token):
             db.session.add(user_chat)
         db.session.commit()
 
+
 def add_bot_user():
-    existing_bot_user = db.session.get(User, -1)
-    if existing_bot_user is None:
-        bot_user = User(
-            id=-1,
-            username='Bot',
-            email=str(uuid4()),
-            password=str(uuid4()),
-            last_seen=datetime.utcnow()
-        )
-        db.session.add(bot_user)
+    bot_user = User(
+        id=-1,
+        username="Bot",
+        email=str(uuid4()),
+        password=str(uuid4()),
+        last_seen=datetime.utcnow()
+    )
+    db.session.add(bot_user)
+    db.session.commit()
+
+
+@app.route('/add_fast_command', methods=['POST'])
+def add_version():
+    data = request.get_json()
+
+    # Access the short_version and full_version from the data dictionary
+    short_version = data.get('short_version')
+    full_version = data.get('full_version')
+
+    user = User.query.get(current_user.id)
+    short_versions_count = len(user.short_versions)
+
+    if short_versions_count < 5:
+        short_version_1 = ShortVersion(short_version=short_version, full_version=full_version, user_id=current_user.id,
+                                       id=short_versions_count + current_user.id * 5)
+
+        print(user.username)
+
+        user.short_versions.append(short_version_1)
+
         db.session.commit()
+        return jsonify({'message': 'Version added successfully'})
+    else:
+        return jsonify({'message': 'Too many fast commands'})
+
+
+@app.route('/get_short_versions', methods=['GET'])
+def get_user_short_versions():
+    user = User.query.get(current_user.id)
+
+    short_versions = [short_version.serialize() for short_version in user.short_versions]
+
+    return jsonify(short_versions)
 
 
 def start_app():
@@ -348,9 +357,7 @@ def start_app():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        add_bot_user()
-    bot_thread = Thread(target=run_bot, args=(TOKEN,))
-    bot_thread.start()
+        # add_bot_user()
+    botThread = Thread(target=run)
+    botThread.start()
     start_app()
-
-

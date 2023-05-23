@@ -1,8 +1,24 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
-
 db = SQLAlchemy()
+
+
+class ShortVersion(db.Model):
+    __tablename__ = 'short_version'
+    id = db.Column(db.Integer, primary_key=True)
+    short_version = db.Column(db.String(200))
+    full_version = db.Column(db.String(500))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<ShortVersion {self.short_version}>'
+
+    def serialize(self):
+        return {
+            'full_version': self.full_version,
+            'short_version': self.short_version,
+        }
 
 
 class User(db.Model, UserMixin):
@@ -18,6 +34,7 @@ class User(db.Model, UserMixin):
     # modded
     user_chats = db.relationship('UserChat', back_populates='user')
 
+    short_versions = db.relationship('ShortVersion', backref='user')
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -80,7 +97,7 @@ class UserChat(db.Model):
             'unread_messages_counter': self.unread_messages_counter,
             'chat_image': self.chat_image,
             'last_message': self.last_message,
-            'user_chat_color':self.user_chat_color,
+            'user_chat_color': self.user_chat_color,
         }
 
     def getName(self):
@@ -119,4 +136,3 @@ class Message(db.Model):
             'timestamp': self.timestamp,
             'file_data': self.file_data,
         }
-

@@ -1,11 +1,3 @@
-// contactsReallocationButton.addEventListener('click', function () {
-//     chatBoxUserInfo.innerHTML = "";
-//     fetchContacts().then(function () {
-//         console.log("contacts fetching in Contacts success")
-//     });
-//     addChatButton.style.display = "flex";
-// })
-
 async function fetchContacts() {
     let response;
     let contacts;

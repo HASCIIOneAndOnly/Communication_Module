@@ -159,13 +159,14 @@ function visualizeSettingsSources() {
 // }
 
 function visualizeSettingsFastResponses() {
+    messagesBox.innerHTML = "";
     const contentHeader = document.createElement('div');
     contentHeader.className = 'content-header';
 
     const image = document.createElement('div');
     image.className = 'image';
     const profileImg = document.createElement('img');
-    profileImg.src = "../static/img/profile-3.png";
+    profileImg.src = "../static/img/fastReplies.png";
     profileImg.alt = '';
     image.appendChild(profileImg);
     contentHeader.appendChild(image);
@@ -178,6 +179,122 @@ function visualizeSettingsFastResponses() {
     contentHeader.appendChild(details);
 
     chatBoxUserInfo.appendChild(contentHeader);
+
+    const fastCommandBlock = document.createElement('label');
+    fastCommandBlock.id = "fast-command-block";
+    const shortVersionTextArea = document.createElement('textarea');
+    shortVersionTextArea.id = "short-version-text-area";
+    shortVersionTextArea.placeholder = "Сокращение";
+    shortVersionTextArea.maxLength = 32;
+
+    fastCommandBlock.appendChild(shortVersionTextArea);
+    const fullVersionTextArea = document.createElement('textarea');
+    fullVersionTextArea.id = "full-version-text-area";
+    fullVersionTextArea.placeholder = "Полная версия фразы";
+    fullVersionTextArea.maxLength = 512;
+
+    fastCommandBlock.appendChild(fullVersionTextArea);
+
+    const fastCommandChangeButton = document.createElement('button');
+    fastCommandChangeButton.id = "fast-command-change-button";
+    fastCommandChangeButton.innerHTML = "Сохранить";
+
+    fastCommandChangeButton.addEventListener('click', function () {
+        let shortVersion = document.getElementById('short-version-text-area').value;
+        let fullVersion = document.getElementById('full-version-text-area').value;
+
+        console.log(fullVersion);
+
+        let data = {
+            short_version: shortVersion,
+            full_version: fullVersion
+        };
+        console.log(JSON.stringify(data));
+        fetch('/add_fast_command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+                getShortCommandsAndVisualizeThem();
+                // Handle the response or perform any necessary actions
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle the error
+            });
+    });
+    fastCommandBlock.appendChild(fastCommandChangeButton);
+
+    messagesBox.appendChild(fastCommandBlock);
+
+    getShortCommandsAndVisualizeThem();
+}
+
+function getShortCommandsAndVisualizeThem() {
+    if (document.getElementById("fast-commands-list-container") === null) {
+        const fast_commands_list_container = document.createElement('ul');
+        fast_commands_list_container.id = "fast-commands-list-container";
+        fetch('/get_short_versions')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                data.forEach(item => {
+                    const fast_command = document.createElement('li');
+                    const fast_command_short = document.createElement('p');
+                    fast_command_short.innerHTML = item.short_version;
+                    const fast_command_full = document.createElement('p');
+                    fast_command_short.className = "short_fast_command";
+                    fast_command_full.innerHTML = item.full_version;
+                    fast_command_full.className = "full_fast_command";
+                    const delete_button_fast_command = document.createElement('button');
+                    delete_button_fast_command.id = "fast-command-delete";
+                    delete_button_fast_command.innerHTML = "X";
+                    fast_command.appendChild(fast_command_short);
+                    fast_command.appendChild(fast_command_full);
+                    fast_commands_list_container.appendChild(fast_command);
+                })
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle the error
+            });
+        rightSideContainer.appendChild(fast_commands_list_container);
+    } else {
+        let fast_commands_list_container;
+        console.log("Good");
+        fast_commands_list_container = document.getElementById("fast-commands-list-container");
+        fast_commands_list_container.innerHTML = "";
+        fetch('/get_short_versions')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                data.forEach(item => {
+                    const fast_command = document.createElement('li');
+                    const fast_command_short = document.createElement('p');
+                    fast_command_short.innerHTML = item.short_version;
+                    const fast_command_full = document.createElement('p');
+                    fast_command_short.className = "short_fast_command";
+                    fast_command_full.innerHTML = item.full_version;
+                    fast_command_full.className = "full_fast_command";
+                    const delete_button_fast_command = document.createElement('button');
+                    delete_button_fast_command.id = "fast-command-delete";
+                    delete_button_fast_command.innerHTML = "X";
+                    fast_command.appendChild(fast_command_short);
+                    fast_command.appendChild(fast_command_full);
+                    fast_commands_list_container.appendChild(fast_command);
+                })
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle the error
+            });
+        rightSideContainer.appendChild(fast_commands_list_container);
+    }
 }
 
 function visualizeSettingsAutoResponse() {

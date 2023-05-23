@@ -104,3 +104,110 @@ the upper left corner of the app)*/
     font-size: 1.6rem;
     font-weight: 500;
 }
+
+#fast-command-block {
+    position: relative;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: transparent;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    display: inherit;
+    z-index: 1;
+}
+
+#short-version-text-area {
+    position: relative;
+    width: calc(100% - 80px - 50px - 60px - 300px);
+    border: none;
+    border-radius: 20px;
+    bottom: 5px;
+    float: left;
+    left: 10px;
+    min-width: 150px;
+    max-width: 200px;
+    margin-right: 30px;
+    margin-left: 5px;
+    display-inside: ruby;
+    padding: 10px 45px 10px 10px;
+}
+
+#full-version-text-area {
+    position: relative;
+    width: calc(100% - 80px - 50px - 60px - 200px);
+    border: none;
+    border-radius: 20px;
+    bottom: 5px;
+    float: right;
+    right: 10px;
+    min-width: 150px;
+    margin-right: 10px;
+    margin-left: 5px;
+    display-inside: ruby;
+    padding: 10px 45px 10px 10px;
+}
+
+#fast-command-change-button {
+    position: relative;
+    width: 75px;
+    background-color: #0088cc;
+    color: #fff;
+    border: none;
+    bottom: 5px;
+    border-radius: 20px;
+    padding: 10px 45px 10px 10px;
+    cursor: pointer;
+    float: left;
+    margin-left: 10px;
+}
+
+#fast-commands-list-container {
+    width: 100%;
+    position: absolute;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #E0C3FC;
+    bottom: 0;
+    height: 400px;
+    left: 0;
+    right: 0;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+    display: inherit;
+    z-index: 1;
+}
+
+#fast-commands-list-container li {
+    clear: both;
+    list-style-type: none;
+    margin-bottom: 15px;
+}
+
+.short_fast_command {
+    float: left;
+    margin-right: 80px;
+    font-size: 32px;
+}
+
+.full_fast_command {
+    float: left;
+    margin-right: 10px;
+    font-size: 32px;
+}
+
+#fast-command-delete {
+    display: flex;
+    float: right;
+    width: 32px;
+    background-color: #E0C3FC;
+}
+
+ul.fast-commands-list-container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
